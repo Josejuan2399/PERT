@@ -6,7 +6,7 @@ function Activity(name, duration, cost, ...pre) {
   this.isDone = !this.pre.length;
 }
 
-/* When we are entering data, before we start to calculate, 
+/* When we are entering data and before we start to calculate, 
 we must do some checks: 
 
 - Check that there's at least 1 activity with no prerequirements
@@ -14,9 +14,7 @@ we must do some checks:
  */
 
 /*TODO: 
-- Once we accomplish them, we need to find a way to get the
-  critial path with the current structure. Hopefully with the
-  flattened and grouped version of the activities done we can accomplish this.
+- Calculate Critical Path
 */
 
 // Main
@@ -50,7 +48,7 @@ function handleActivities(activities) {
 
     // Check for activities that are ready to be processed / checkForReadyActivities / Helper
     for (const activity of activitiesNotDone) {
-      if (canActivityProcceed(activity, flatActivitiesDone)) {
+      if (canActivityProceed(activity, flatActivitiesDone)) {
         activitiesReady.push(activity.name);
       }
     }
@@ -75,9 +73,9 @@ function handleActivities(activities) {
   }
 }
 
-/* Helper, checks the all the prerequisites of an activity, 
+/* Helper, checks the that the prerequisites of an activity, 
 returns true if all of its prerequisites are already done, else returns false.*/
-function canActivityProcceed(currentActivity, activitiesDone) {
+function canActivityProceed(currentActivity, activitiesDone) {
   /* If the required activities are more than the ones done, then 
   the current one is not eligible just yet.*/
   if (currentActivity.pre.length > activitiesDone.length) return false;
@@ -120,7 +118,7 @@ const adminExpenses = 50000;
 
 // Basically, all activities that are done.
 let flatActivitiesDone = data.filter(act => act.isDone);
-/* Activities that are grouped basically are those who can be handled
+/* Activities that are grouped are those who can be handled
 at the same time because their prerequisites are already done.*/
 let groupedActivitiesDone = [data.filter(act => act.isDone), []];
 
