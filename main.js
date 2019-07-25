@@ -34,7 +34,7 @@ function calculateTotalDuration(activities) {
 }
 
 // Main
-function calculateCriticalPath() {
+function calculateCriticalPath(activities) {
   return groupedActivitiesDone
     .map(group => {
       return group.filter(act => act.duration === getHighestDuration(group))
@@ -73,9 +73,9 @@ function handleActivities(activities) {
       groupedActivitiesDone[groupedActivitiesDone.length - 1].push(
         activities[indexOfActivity]
       );
-      if (indexOfActivity !== activities.length - 1)
-        groupedActivitiesDone.push([]);
     }
+    if (indexOfActivity !== activities.length - 1)
+      groupedActivitiesDone.push([]);
   }
 }
 
