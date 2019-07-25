@@ -3,7 +3,7 @@ function Activity(name, duration, cost, ...pre) {
   this.duration = duration;
   this.cost = cost;
   this.pre = pre;
-  this.isDone = !this.pre.length;
+  this.isDone = false;
 }
 
 /* When we are entering data and before we start to calculate, 
@@ -45,6 +45,7 @@ function handleActivities(activities) {
   while (flatActivitiesDone.length !== activities.length) {
     let activitiesNotDone = activities.filter(act => !act.isDone);
     let activitiesReady = [];
+    let indexOfActivity;
 
     // Check for activities that are ready to be processed / checkForReadyActivities / Helper
     for (const activity of activitiesNotDone) {
@@ -60,7 +61,7 @@ function handleActivities(activities) {
 
     // Handles activities that are ready / handleReadyActivities / Helper
     for (const activity of activitiesReady) {
-      const indexOfActivity = activities.findIndex(act => {
+      indexOfActivity = activities.findIndex(act => {
         return act.name === activity;
       });
       activities[indexOfActivity].isDone = true;
@@ -69,6 +70,9 @@ function handleActivities(activities) {
         activities[indexOfActivity]
       );
     }
+    groupedActivitiesDone[groupedActivitiesDone.length - 1].push(
+      { timeElapsed: calculateTimeElapsed(indexOfActivity) }
+    );
     groupedActivitiesDone.push([]);
   }
 }
@@ -117,10 +121,10 @@ const data = [
 const adminExpenses = 50000;
 
 // Basically, all activities that are done.
-let flatActivitiesDone = data.filter(act => act.isDone);
+let flatActivitiesDone = [];
 /* Activities that are grouped are those who can be handled
 at the same time because their prerequisites are already done.*/
-let groupedActivitiesDone = [data.filter(act => act.isDone), []];
+let groupedActivitiesDone = [[]];
 
 const totalDuration = calculateTotalDuration(data);
 const totalCost = calculateTotalCost(data);
@@ -128,4 +132,7 @@ const criticalPath = 'Falta Hacerla xd'
 
 console.log(`Duracion Total: ${totalDuration} Meses`);
 console.log(`Costo Total: RD$${totalCost}`);
+console.log('\n\n');
+console.log(groupedActivitiesDone);
+
 console.log('Ruta Critica:', criticalPath);
