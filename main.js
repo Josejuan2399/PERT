@@ -34,7 +34,7 @@ function calculateTotalDuration(activities) {
 }
 
 // Main
-function calculateCriticalPath(activities) {
+function calculateCriticalPath() {
   return groupedActivitiesDone
     .map(group => {
       return group.filter(act => act.duration === getHighestDuration(group))
@@ -130,8 +130,13 @@ let groupedActivitiesDone = [[]];
 
 const totalDuration = calculateTotalDuration(data);
 const totalCost = calculateTotalCost(data);
-const criticalPath = calculateCriticalPath(data);
+const criticalPath = calculateCriticalPath();
 
 console.log(`Duracion Total: ${totalDuration} Meses`);
 console.log(`Costo Total: RD$${totalCost}`);
-console.log('Ruta Critica:', criticalPath);
+console.log('Ruta Critica:')
+
+// Printing Out Loud
+criticalPath.forEach(element => {
+  console.log(element[0].name);
+});
