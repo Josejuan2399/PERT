@@ -13,10 +13,6 @@ we must do some checks:
 - Check that all prerequirements have been declared as an activity
  */
 
-/*TODO: 
-- Calculate Critical Path
-*/
-
 // Main
 function calculateTotalCost(activities) {
   return (
@@ -38,11 +34,11 @@ function calculateTotalDuration(activities) {
 }
 
 // Main
-function calculateCriticalPath(activities) {
+function calculateCriticalPath() {
   return groupedActivitiesDone
-  .map(group => {
-    return group.filter(act => act.duration === getHighestDuration(group))
-  });
+    .map(group => {
+      return group.filter(act => act.duration === getHighestDuration(group))
+    });
 }
 
 /* Helper, basically does most part of the job, i think it can explain itself.
@@ -77,8 +73,9 @@ function handleActivities(activities) {
       groupedActivitiesDone[groupedActivitiesDone.length - 1].push(
         activities[indexOfActivity]
       );
+      if (indexOfActivity !== activities.length - 1)
+        groupedActivitiesDone.push([]);
     }
-    groupedActivitiesDone.push([]);
   }
 }
 
