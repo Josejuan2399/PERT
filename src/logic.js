@@ -1,4 +1,4 @@
-function Activity(name, duration, cost, ...pre) {
+export function Activity(name, duration, cost, ...pre) {
   this.name = name;
   this.duration = duration;
   this.cost = cost;
@@ -19,8 +19,9 @@ we must do some checks:
  * 
  * @param {Array<Activity>} activities 
  * @param {Number} adminExpenses 
+ * @param {Number} totalDuration 
  */
-function calculateTotalCost(activities, adminExpenses) {
+export function calculateTotalCost(activities, totalDuration, adminExpenses) {
   return (
     activities.reduce((total, { cost, duration }) => {
       return total + cost * duration;
@@ -35,7 +36,7 @@ function calculateTotalCost(activities, adminExpenses) {
  * @param {Array<Activity>} activities 
  * @param {Array<Array<Activity>>} groupedActivitiesDone 
  */
-function calculateTotalDuration(activities, groupedActivitiesDone, flatActivitiesDone) {
+export function calculateTotalDuration(activities, groupedActivitiesDone, flatActivitiesDone) {
   handleActivities(activities, flatActivitiesDone, groupedActivitiesDone);
   return groupedActivitiesDone
     .map(group => {
@@ -49,7 +50,7 @@ function calculateTotalDuration(activities, groupedActivitiesDone, flatActivitie
  * 
  * @param {Array<Array<Activity>>} groupedActivitiesDone 
  */
-function calculateCriticalPath(groupedActivitiesDone) {
+export function calculateCriticalPath(groupedActivitiesDone) {
   return groupedActivitiesDone
     .map(group => {
       return group.filter(act => act.duration === getHighestDuration(group))
@@ -137,12 +138,6 @@ function getHighestDuration(activityGroup) {
     (max, { duration }) => (duration > max ? duration : max),
     0
   );
-}
-
-exports.module = {
-  calculateCriticalPath,
-  calculateTotalCost,
-  calculateTotalDuration
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> SAMPLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
