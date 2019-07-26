@@ -33,9 +33,10 @@ function calculateTotalCost(activities, adminExpenses) {
 /**
  * 
  * @param {Array<Activity>} activities 
+ * @param {Array<Array<Activity>>} groupedActivitiesDone 
  */
-function calculateTotalDuration(activities) {
-  handleActivities(activities);
+function calculateTotalDuration(activities, groupedActivitiesDone, flatActivitiesDone) {
+  handleActivities(activities, flatActivitiesDone, groupedActivitiesDone);
   return groupedActivitiesDone
     .map(group => {
       return getHighestDuration(group);
@@ -60,8 +61,10 @@ function calculateCriticalPath(groupedActivitiesDone) {
 /**
  * 
  * @param {Array<Activity>} activities 
+ * @param {Array<Activity>} flatActivitiesDone 
+ * @param {Array<Activity>} groupedActivitiesDone 
  */
-function handleActivities(activities) {
+function handleActivities(activities, flatActivitiesDone, groupedActivitiesDone) {
   //By default these grab the ones without prerequisites
 
   while (flatActivitiesDone.length !== activities.length) {
@@ -105,15 +108,15 @@ returns true if all of its prerequisites are already done, else returns false.*/
  * @param {Activity} currentActivity 
  * @param {Array<Activity>} activitiesDone 
  */
-function canActivityProceed(currentActivity, activitiesDone) {
+function canActivityProceed(currentActivity, flatActivitiesDone) {
   /* If the required activities are more than the ones done, then 
   the current one is not eligible just yet.*/
-  if (currentActivity.pre.length > activitiesDone.length) return false;
+  if (currentActivity.pre.length > flatActivitiesDone.length) return false;
   else {
     /* If there are more than one pre required activity, then we must check
-  that all of them are in the activitiesDone List. */
+  that all of them are in the flatActivitiesDone List. */
     for (const currentPre of currentActivity.pre) {
-      const canBeProceeded = !!activitiesDone.find(act => {
+      const canBeProceeded = !!flatActivitiesDone.find(act => {
         return act.name === currentPre;
       });
       if (canBeProceeded) {
@@ -136,41 +139,33 @@ function getHighestDuration(activityGroup) {
   );
 }
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> START <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-const data = [
-  new Activity("A", 10, 100000),
-  new Activity("B", 5, 500000),
-  new Activity("C", 1, 1000000, "A", "B"),
-  new Activity("D", 9, 2000000, "C"),
-  new Activity("E", 7, 800000, "C"),
-  new Activity("F", 1, 1500000, "D", "E"),
-  new Activity("G", 4, 600000, "D", "E")
-];
-
-const adminExpenses = 50000;
-
-// Basically, all activities that are done.
-let flatActivitiesDone = [];
-/* Activities that are grouped are those who can be handled
-at the same time because their prerequisites are already done.*/
-let groupedActivitiesDone = [[]];
-
-const totalDuration = calculateTotalDuration(data);
-const totalCost = calculateTotalCost(data, adminExpenses);
-const criticalPath = calculateCriticalPath(groupedActivitiesDone);
-
-console.log(`Duracion Total: ${totalDuration} Meses`);
-console.log(`Costo Total: RD$${totalCost}`);
-console.log('Ruta Critica:')
-
-// Printing Out Loud
-criticalPath.forEach(element => {
-  console.log(element[0].name);
-});
-
 exports.module = {
   calculateCriticalPath,
   calculateTotalCost,
   calculateTotalDuration
 }
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> SAMPLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+// const data = [
+//   new Activity("A", 10, 100000),
+//   new Activity("B", 5, 500000),
+//   new Activity("C", 1, 1000000, "A", "B"),
+//   new Activity("D", 9, 2000000, "C"),
+//   new Activity("E", 7, 800000, "C"),
+//   new Activity("F", 1, 1500000, "D", "E"),
+//   new Activity("G", 4, 600000, "D", "E")
+// ];
+
+// const adminExpenses = 50000;
+
+// Basically, all activities that are done.
+// let flatActivitiesDone = []; 
+/* Activities that are grouped are those who can be handled
+at the same time because their prerequisites are already done.*/
+// let groupedActivitiesDone = [[]];
+
+// const totalDuration = calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone);
+// const totalCost = calculateTotalCost(data, adminExpenses);
+// const criticalPath = calculateCriticalPath(groupedActivitiesDone);
+
