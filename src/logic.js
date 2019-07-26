@@ -14,7 +14,13 @@ we must do some checks:
  */
 
 // Main
-function calculateTotalCost(activities) {
+
+/**
+ * 
+ * @param {Array<Activity>} activities 
+ * @param {Number} adminExpenses 
+ */
+function calculateTotalCost(activities, adminExpenses) {
   return (
     activities.reduce((total, { cost, duration }) => {
       return total + cost * duration;
@@ -24,6 +30,10 @@ function calculateTotalCost(activities) {
 }
 
 // Main
+/**
+ * 
+ * @param {Array<Activity>} activities 
+ */
 function calculateTotalDuration(activities) {
   handleActivities(activities);
   return groupedActivitiesDone
@@ -34,7 +44,11 @@ function calculateTotalDuration(activities) {
 }
 
 // Main
-function calculateCriticalPath() {
+/**
+ * 
+ * @param {Array<Array<Activity>>} groupedActivitiesDone 
+ */
+function calculateCriticalPath(groupedActivitiesDone) {
   return groupedActivitiesDone
     .map(group => {
       return group.filter(act => act.duration === getHighestDuration(group))
@@ -42,6 +56,10 @@ function calculateCriticalPath() {
 }
 
 /* Helper, basically does most part of the job, i think it can explain itself.
+ */
+/**
+ * 
+ * @param {Array<Activity>} activities 
  */
 function handleActivities(activities) {
   //By default these grab the ones without prerequisites
@@ -81,6 +99,12 @@ function handleActivities(activities) {
 
 /* Helper, checks the that the prerequisites of an activity, 
 returns true if all of its prerequisites are already done, else returns false.*/
+
+/**
+ * 
+ * @param {Activity} currentActivity 
+ * @param {Array<Activity>} activitiesDone 
+ */
 function canActivityProceed(currentActivity, activitiesDone) {
   /* If the required activities are more than the ones done, then 
   the current one is not eligible just yet.*/
@@ -101,6 +125,10 @@ function canActivityProceed(currentActivity, activitiesDone) {
 }
 
 // Helper
+/**
+ * 
+ * @param {Array<Array<Activity>>} activityGroup 
+ */
 function getHighestDuration(activityGroup) {
   return activityGroup.reduce(
     (max, { duration }) => (duration > max ? duration : max),
@@ -129,8 +157,8 @@ at the same time because their prerequisites are already done.*/
 let groupedActivitiesDone = [[]];
 
 const totalDuration = calculateTotalDuration(data);
-const totalCost = calculateTotalCost(data);
-const criticalPath = calculateCriticalPath();
+const totalCost = calculateTotalCost(data, adminExpenses);
+const criticalPath = calculateCriticalPath(groupedActivitiesDone);
 
 console.log(`Duracion Total: ${totalDuration} Meses`);
 console.log(`Costo Total: RD$${totalCost}`);
@@ -140,3 +168,9 @@ console.log('Ruta Critica:')
 criticalPath.forEach(element => {
   console.log(element[0].name);
 });
+
+exports.module = {
+  calculateCriticalPath,
+  calculateTotalCost,
+  calculateTotalDuration
+}
