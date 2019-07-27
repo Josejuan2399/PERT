@@ -1,3 +1,13 @@
 .App {
   text-align: center;
 }
+
+.table {
+  max-width: 80%;
+  margin: 5px auto;
+  background-color: white;
+}
+
+html {
+  background-color: #f7f7f7;
+}

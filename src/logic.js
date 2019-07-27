@@ -1,3 +1,10 @@
+/**
+ * 
+ * @param {String} name 
+ * @param {Number} duration 
+ * @param {Number} cost 
+ * @param  {...String} pre 
+ */
 export function Activity(name, duration, cost, ...pre) {
   this.name = name;
   this.duration = duration;
@@ -155,10 +162,8 @@ function getHighestDuration(activityGroup) {
 // const adminExpenses = 50000;
 
 // Basically, all activities that are done.
-// let flatActivitiesDone = []; 
-/* Activities that are grouped are those who can be handled
-at the same time because their prerequisites are already done.*/
-// let groupedActivitiesDone = [[]];
+// let flatActivitiesDone = [];  // Initialize like this
+// let groupedActivitiesDone = [[]]; // Initialize like this
 
 // const totalDuration = calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone);
 // const totalCost = calculateTotalCost(data, adminExpenses);
