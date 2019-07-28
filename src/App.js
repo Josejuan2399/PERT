@@ -46,11 +46,10 @@ function App() {
   let [wasCalculated, setCalc] = useState(false);
 
   const handleData = (data) => {
-    console.log(data)
-    // setDuration(calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone));
-    // setCost(calculateTotalCost(data, duration, adminExpenses));
-    // setCriticalPath(calculateCriticalPath(groupedActivitiesDone));
-    // setCalc(true);
+    setDuration(calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone));
+    setCost(calculateTotalCost(data, duration, adminExpenses));
+    setCriticalPath(calculateCriticalPath(groupedActivitiesDone));
+    setCalc(true);
   }
 
   return (
@@ -78,7 +77,7 @@ function Form({ onSubmit }) {
 
   function handleChange({ target: { value } }, key, index) {
     let newData = [...data];
-    newData[index][key] = value;
+    newData[index][key] = key === 'name' ?  value : parseInt(value);
     setData(newData);
     console.log(data)
   }
