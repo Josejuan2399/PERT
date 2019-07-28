@@ -46,10 +46,11 @@ function App() {
   let [wasCalculated, setCalc] = useState(false);
 
   const handleData = (data) => {
-    setDuration(calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone));
-    setCost(calculateTotalCost(data, duration, adminExpenses));
-    setCriticalPath(calculateCriticalPath(groupedActivitiesDone));
-    setCalc(true);
+    console.log(data)
+    // setDuration(calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone));
+    // setCost(calculateTotalCost(data, duration, adminExpenses));
+    // setCriticalPath(calculateCriticalPath(groupedActivitiesDone));
+    // setCalc(true);
   }
 
   return (
@@ -96,7 +97,7 @@ function Form({ onSubmit }) {
   }
 
   function createNewActivity() {
-    setData([...data, new Activity('', 0, 0, [])])
+    setData([...data, new Activity('', 0, 0)])
   }
 
   useEffect(() => {
