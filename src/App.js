@@ -14,12 +14,14 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
+import Chip from '@material-ui/core/Chip';
+import MenuItem from '@material-ui/core/MenuItem';
 import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 
 import './App.css';
 
 import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Activity } from './logic.js';
+import { isValueInAnotherArray } from './helpers';
 
 let sampleData = [
   new Activity("A", 10, 100000),
@@ -36,7 +38,7 @@ let groupedActivitiesDone = [[]];
 let sampleAdminExpenses = 50000;
 
 function App() {
-  let [data, setData] = useState(sampleData);
+  let [data, setData] = useState([]);
   let [adminExpenses, setExpenses] = useState(sampleAdminExpenses);
   let [cost, setCost] = useState(0);
   let [duration, setDuration] = useState(0);
@@ -60,7 +62,14 @@ function App() {
   );
 }
 
-
+// Probably can use this to render a Chip with delete button
+function preChip(value, handleDeleteFN = () => { }) {
+  return <Chip
+    label={value}
+    onDelete={handleDeleteFN}
+    color="primary"
+  />
+}
 
 function Form({ onSubmit }) {
   let [data, setData] = useState(sampleData);
@@ -73,6 +82,29 @@ function Form({ onSubmit }) {
     console.log(data)
   }
 
+  function addPre({ target: { value } }, index) {
+    let newData = [...data];
+    newData[index].pre.push(value);
+    setData(newData);
+    console.log(newData);
+  }
+
+  function removePre(activityName, index) {
+    let newData = [...data];
+    newData[index].pre = newData[index].pre.filter(el => el !== activityName);
+    setData(newData);
+  }
+
+  function createNewActivity() {
+    setData([...data, new Activity('', 0, 0, [])])
+  }
+
+  useEffect(() => {
+    // createNewActivity();
+    // createNewActivity();
+  }, [])
+
+
   return (<Table className="table">
     <TableHead>
       <TableRow>
@@ -84,13 +116,24 @@ function Form({ onSubmit }) {
     </TableHead>
     <TableBody>
       {
-        data.map((d, index) => {
+        data.map((act, index) => {
           return (
             <TableRow>
-              <TableCell > <TextField value={data[index].name} onChange={event => handleChange(event, 'name', index)}></TextField> </TableCell>
-              <TableCell> {index !== 0 && <p>woot</p>} </TableCell>
-              <TableCell > <TextField type="number" value={data[index].duration} onChange={event => handleChange(event, 'duration', index)}></TextField> </TableCell>
-              <TableCell > <TextField type="number" value={data[index].cost} onChange={event => handleChange(event, 'cost', index)}></TextField> </TableCell>
+              <TableCell > <TextField value={act.name} onChange={event => handleChange(event, 'name', index)}></TextField> </TableCell>
+              <TableCell> {index !== 0 &&
+                <Select
+                  value={act.pre} // Values already Selected
+                  onChange={event => { addPre(event, index) }}
+                  renderValue={selected => <div>{selected + ''}</div>} // The way that already selected values will be rendered
+                >
+                    {/* Handles Values in the Selection Menu */}
+                  {data.map(({ name }) => (name !== act.name && isValueInAnotherArray(data[index].pre, name)) && <MenuItem value={name}>
+                    {name} 
+                  </MenuItem>)}
+                </Select>
+              } </TableCell>
+              <TableCell > <TextField type="number" value={act.duration} onChange={event => handleChange(event, 'duration', index)}></TextField> </TableCell>
+              <TableCell > <TextField type="number" value={act.cost} onChange={event => handleChange(event, 'cost', index)}></TextField> </TableCell>
             </TableRow>
           )
         })
@@ -98,8 +141,8 @@ function Form({ onSubmit }) {
     </TableBody>
     <TableFooter>
       <Grid >
-        <IconButton><AddIcon onClick={() => setData([...data, new Activity('', 0, 0, [])])} /></IconButton>
-        <IconButton><PlayArrowIcon /></IconButton>
+        <IconButton onClick={() => { createNewActivity() }}><AddIcon /></IconButton>
+        <IconButton onClick={() => { onSubmit(data) }}><PlayArrowIcon /></IconButton>
       </Grid>
     </TableFooter>
 
@@ -113,7 +156,7 @@ function Results({ duration, cost, criticalPath }) {
       <p>Duracion Total: {duration} meses</p>
       <p>Costo Total: RD${cost}</p>
       <span>Ruta Critica: </span>
-      {criticalPath.map(element => <span>{element[0].name}</span>)}
+      {criticalPath.map(element => <span>{`(${element[0].name})` + ' '}</span>)}
     </div>
   )
 }
