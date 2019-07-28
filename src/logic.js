@@ -64,6 +64,21 @@ export function calculateCriticalPath(groupedActivitiesDone) {
     });
 }
 
+// Main
+export function calculateBudget(groupedActivities) {
+  const budget = []
+  for (const group of groupedActivities) {
+    const groupHighestDuration = getHighestDuration(group);
+    for (let time = 1; time <= groupHighestDuration; time++) {
+      budget.push(adminExpenses)
+      group.forEach(act => {
+        if (time <= act.duration) budget[budget.length - 1] += act.cost;
+      });
+    }
+  }
+  return budget;
+}
+
 /* Helper, basically does most part of the job, i think it can explain itself.
  */
 /**
@@ -166,6 +181,14 @@ function getHighestDuration(activityGroup) {
 // let groupedActivitiesDone = [[]]; // Initialize like this
 
 // const totalDuration = calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone);
-// const totalCost = calculateTotalCost(data, adminExpenses);
+// const totalCost = calculateTotalCost(data, totalDuration, adminExpenses);
 // const criticalPath = calculateCriticalPath(groupedActivitiesDone);
+// const budget = calculateBudget(groupedActivitiesDone);
 
+// console.log(totalDuration)
+// console.log(totalCost)
+// criticalPath.forEach(element => {
+//   console.log(element[0].name);
+// });
+
+// console.log(budget)
