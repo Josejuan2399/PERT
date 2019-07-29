@@ -8,6 +8,16 @@
   background-color: white;
 }
 
+.table-sm {
+  max-width: 30%;
+  margin: 5px auto;
+  background-color: white;
+}
+
+.table-cell-sm {
+  width: 50px;
+}
+
 html {
   background-color: #f7f7f7;
 }

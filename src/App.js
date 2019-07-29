@@ -79,7 +79,7 @@ function Form({ onSubmit }) {
 
   function handleChange({ target: { value } }, key, index) {
     let newData = [...data];
-    newData[index][key] = key === 'name' ?  value : parseInt(value);
+    newData[index][key] = key === 'name' ? value : parseInt(value);
     setData(newData);
     console.log(data)
   }
@@ -128,9 +128,9 @@ function Form({ onSubmit }) {
                   onChange={event => { addPre(event, index) }}
                   renderValue={selected => <div>{selected + ''}</div>} // The way that already selected values will be rendered
                 >
-                    {/* Handles Values in the Selection Menu */}
+                  {/* Handles Values in the Selection Menu */}
                   {data.map(({ name }) => (name !== act.name && isValueInAnotherArray(data[index].pre, name)) && <MenuItem value={name}>
-                    {name} 
+                    {name}
                   </MenuItem>)}
                 </Select>
               } </TableCell>
@@ -159,10 +159,23 @@ function Results({ duration, cost, criticalPath, budget }) {
       <p>Costo Total: RD${cost}</p>
       <span>Ruta Critica: </span>
       {criticalPath.map(element => <span>{`(${element[0].name})` + ' '}</span>)}
-      <p>Presupuesto</p>
-      {budget.map((elem, index) => {
-        return <p>{index}. {elem}</p>
-      })}
+      <h2>Presupuesto</h2>
+      <Table className="table-sm">
+        <TableHead>
+          <TableRow>
+            <TableCell className="table-cell-sm">Mes</TableCell>
+            <TableCell>Costo</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {budget.map((elem, index) => {
+            return <TableRow>
+              <TableCell>{index}.</TableCell>
+              <TableCell>{elem}</TableCell>
+            </TableRow>
+          })}
+        </TableBody>
+      </Table>
     </div>
   )
 }
