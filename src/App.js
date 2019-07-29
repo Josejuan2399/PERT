@@ -20,7 +20,7 @@ import Input from '@material-ui/core/Input';
 
 import './App.css';
 
-import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Activity } from './logic.js';
+import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Activity, calculateBudget } from './logic.js';
 import { isValueInAnotherArray } from './helpers';
 
 let sampleData = [
@@ -43,12 +43,14 @@ function App() {
   let [cost, setCost] = useState(0);
   let [duration, setDuration] = useState(0);
   let [criticalPath, setCriticalPath] = useState([]);
+  let [budget, setBudget] = useState([]);
   let [wasCalculated, setCalc] = useState(false);
 
   const handleData = (data) => {
     setDuration(calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone));
     setCost(calculateTotalCost(data, duration, adminExpenses));
     setCriticalPath(calculateCriticalPath(groupedActivitiesDone));
+    setBudget(calculateBudget(groupedActivitiesDone, adminExpenses));
     setCalc(true);
   }
 
@@ -56,7 +58,7 @@ function App() {
     <div className="App">
       <Form onSubmit={handleData} />
       {wasCalculated && <div>
-        <div className="horizontal-divisor"></div> <Results duration={duration} cost={cost} criticalPath={criticalPath} />
+        <div className="horizontal-divisor"></div> <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} />
       </div>}
     </div>
   );
@@ -149,7 +151,7 @@ function Form({ onSubmit }) {
   </Table>)
 }
 
-function Results({ duration, cost, criticalPath }) {
+function Results({ duration, cost, criticalPath, budget }) {
   return (
     <div>
       <h1>Resultados</h1>
@@ -157,6 +159,10 @@ function Results({ duration, cost, criticalPath }) {
       <p>Costo Total: RD${cost}</p>
       <span>Ruta Critica: </span>
       {criticalPath.map(element => <span>{`(${element[0].name})` + ' '}</span>)}
+      <p>Presupuesto</p>
+      {budget.map((elem, index) => {
+        return <p>{index}. {elem}</p>
+      })}
     </div>
   )
 }

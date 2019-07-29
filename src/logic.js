@@ -65,7 +65,7 @@ export function calculateCriticalPath(groupedActivitiesDone) {
 }
 
 // Main
-export function calculateBudget(groupedActivities) {
+export function calculateBudget(groupedActivities, adminExpenses) {
   const budget = []
   for (const group of groupedActivities) {
     const groupHighestDuration = getHighestDuration(group);
