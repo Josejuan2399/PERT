@@ -2,25 +2,30 @@ import React, {
   useState, useEffect
 } from 'react';
 
+// TABLE
 import Table from '@material-ui/core/Table';
 import TableFooter from '@material-ui/core/TableFooter';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import TextField from '@material-ui/core/TextField';
+
+// ICONS
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import TextField from '@material-ui/core/TextField';
+
 import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
-import Input from '@material-ui/core/Input';
-import RemoveIcon from '@material-ui/icons/Remove';
 
+// STYLES
 import './App.css';
 
+// HELPERS
 import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Activity, calculateBudget } from './logic.js';
 import { isValueInAnotherArray, canRemoveActivity } from './helpers';
 
@@ -82,14 +87,12 @@ function Form({ onSubmit }) {
     let newData = [...data];
     newData[index][key] = key === 'name' ? value : parseInt(value);
     setData(newData);
-    console.log(data)
   }
 
   function addPre({ target: { value } }, index) {
     let newData = [...data];
     newData[index].pre.push(value);
     setData(newData);
-    console.log(newData);
   }
 
   function removePre(activityName, index) {
@@ -107,7 +110,6 @@ function Form({ onSubmit }) {
     };
 
     newData = newData.filter(el => el.name !== activityName);
-    console.log(newData);
     setData(newData);
   } // Check if there's an activity that has this one as a prerequisite
 
@@ -186,8 +188,8 @@ function Results({ duration, cost, criticalPath, budget }) {
         <TableBody>
           {budget.map((elem, index) => {
             return <TableRow>
-              <TableCell>{index}.</TableCell>
-              <TableCell>{elem}</TableCell>
+              <TableCell>{index + 1}.</TableCell>
+              <TableCell>RD${elem}</TableCell>
             </TableRow>
           })}
         </TableBody>
