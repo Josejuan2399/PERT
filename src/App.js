@@ -64,9 +64,13 @@ function App() {
     setCalc(true);
   }
 
+  const setDataThroughChildren = (newData) => {
+    setData(newData);
+  }
+
   return (
     <div className="App">
-      <Form onSubmit={handleData} />
+      <Form onSubmit={handleData} setData={setDataThroughChildren} data={data}/>
       {wasCalculated && <div>
         <div className="horizontal-divisor"></div>
         <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} />
@@ -84,9 +88,7 @@ function preChip(value, handleDeleteFN = () => { }) {
   />
 }
 
-function Form({ onSubmit }) {
-  let [data, setData] = useState(sampleData);
-  let [names, setName] = useState('');
+function Form({ onSubmit, data, setData }) {
 
   function handleChange({ target: { value } }, key, index) {
     let newData = [...data];
