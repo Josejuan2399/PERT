@@ -27,7 +27,8 @@ import './App.css';
 
 // HELPERS
 import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Activity, calculateBudget } from './logic.js';
-import { isValueInAnotherArray, canRemoveActivity } from './helpers';
+import { isValueInAnotherArray, canRemoveActivity, hasUniqueName } from './helpers';
+import Tooltip from '@material-ui/core/Tooltip';
 
 let sampleData = [
   new Activity("A", 10, 100000),
@@ -64,7 +65,8 @@ function App() {
     <div className="App">
       <Form onSubmit={handleData} />
       {wasCalculated && <div>
-        <div className="horizontal-divisor"></div> <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} />
+        <div className="horizontal-divisor"></div> 
+        <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} />
       </div>}
     </div>
   );
@@ -104,7 +106,7 @@ function Form({ onSubmit }) {
   function removeActivity(activityName) {
     let newData = [...data];
 
-    if (!canRemoveActivity(data,activityName)) {
+    if (!canRemoveActivity(data, activityName)) {
       alert('Esta actividad es prerequisito de otra.');
       return;
     };
@@ -138,22 +140,32 @@ function Form({ onSubmit }) {
         data.map((act, index) => {
           return (
             <TableRow>
-              <TableCell > <TextField value={act.name} onChange={event => handleChange(event, 'name', index)}></TextField> </TableCell>
-              <TableCell> {index !== 0 &&
-                <Select
-                  value={act.pre} // Values already Selected
-                  onChange={event => { addPre(event, index) }}
-                  renderValue={selected => <div>{selected + ''}</div>} // The way that already selected values will be rendered
-                >
-                  {/* Handles Values in the Selection Menu */}
-                  {data.map(({ name }) => (name !== act.name && isValueInAnotherArray(data[index].pre, name)) && <MenuItem value={name}>
-                    {name}
-                  </MenuItem>)}
-                </Select>
-              } </TableCell>
-              <TableCell > <TextField type="number" value={act.duration} onChange={event => handleChange(event, 'duration', index)}></TextField> </TableCell>
-              <TableCell > <TextField type="number" value={act.cost} onChange={event => handleChange(event, 'cost', index)}></TextField> </TableCell>
-              <TableCell> <IconButton onClick={() => removeActivity(data[index].name)} > <RemoveIcon></RemoveIcon> </IconButton> </TableCell>
+              <TableCell >
+                <TextField value={act.name} onChange={event => handleChange(event, 'name', index)}></TextField>
+              </TableCell>
+              <TableCell>
+                {index !== 0 &&
+                  <Select
+                    value={act.pre} // Values already Selected
+                    onChange={event => { addPre(event, index) }}
+                    renderValue={selected => <div>{selected + ''}</div>} // The way that already selected values will be rendered
+                  >
+                    {/* Handles Values in the Selection Menu */}
+                    {data.map(({ name }) => (name !== act.name && isValueInAnotherArray(data[index].pre, name)) && <MenuItem value={name}>
+                      {name}
+                    </MenuItem>)}
+                  </Select>
+                }
+              </TableCell>
+              <TableCell >
+                <TextField type="number" value={act.duration} onChange={event => handleChange(event, 'duration', index)}></TextField>
+              </TableCell>
+              <TableCell >
+                <TextField type="number" value={act.cost} onChange={event => handleChange(event, 'cost', index)}></TextField>
+              </TableCell>
+              <TableCell>
+                <IconButton onClick={() => removeActivity(data[index].name)} > <RemoveIcon></RemoveIcon> </IconButton>
+              </TableCell>
             </TableRow>
           )
         })
@@ -161,8 +173,12 @@ function Form({ onSubmit }) {
     </TableBody>
     <TableFooter>
       <Grid >
-        <IconButton onClick={() => { createNewActivity() }}><AddIcon /></IconButton>
-        <IconButton onClick={() => { onSubmit(data) }}><PlayArrowIcon /></IconButton>
+        <Tooltip title="Agregar Actividad">
+          <IconButton onClick={() => { createNewActivity() }}><AddIcon /></IconButton>
+        </Tooltip>
+        <Tooltip title="Calcular">
+          <IconButton onClick={() => { onSubmit(data) }}><PlayArrowIcon /></IconButton>
+        </Tooltip>
       </Grid>
     </TableFooter>
 

@@ -11,3 +11,10 @@ export function canRemoveActivity(activities, activityName) {
     }
     return true;
 }
+
+export function hasUniqueName(activities, newActivityName) {
+    for (const activity of activities) {
+        if (activity.name === newActivityName) return false;
+    }
+    return true;
+}
