@@ -30,6 +30,9 @@ import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Acti
 import { isValueInAnotherArray, canRemoveActivity, hasUniqueName } from './helpers';
 import Tooltip from '@material-ui/core/Tooltip';
 
+// COMPONENTS
+import { Results } from './components/Results.js';
+
 let sampleData = [
   new Activity("A", 10, 100000),
   new Activity("B", 5, 500000),
@@ -65,7 +68,7 @@ function App() {
     <div className="App">
       <Form onSubmit={handleData} />
       {wasCalculated && <div>
-        <div className="horizontal-divisor"></div> 
+        <div className="horizontal-divisor"></div>
         <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} />
       </div>}
     </div>
@@ -172,7 +175,7 @@ function Form({ onSubmit }) {
       }
     </TableBody>
     <TableFooter>
-      <Grid >
+      <Grid>
         <Tooltip title="Agregar Actividad">
           <IconButton onClick={() => { createNewActivity() }}><AddIcon /></IconButton>
         </Tooltip>
@@ -183,35 +186,6 @@ function Form({ onSubmit }) {
     </TableFooter>
 
   </Table>)
-}
-
-function Results({ duration, cost, criticalPath, budget }) {
-  return (
-    <div>
-      <h1>Resultados</h1>
-      <p>Duracion Total: {duration} meses</p>
-      <p>Costo Total: RD${cost}</p>
-      <span>Ruta Critica: </span>
-      {criticalPath.map(element => <span>{`(${element[0].name})` + ' '}</span>)}
-      <h2>Presupuesto</h2>
-      <Table className="table-sm">
-        <TableHead>
-          <TableRow>
-            <TableCell className="table-cell-sm">Mes</TableCell>
-            <TableCell>Costo</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {budget.map((elem, index) => {
-            return <TableRow>
-              <TableCell>{index + 1}.</TableCell>
-              <TableCell>RD${elem}</TableCell>
-            </TableRow>
-          })}
-        </TableBody>
-      </Table>
-    </div>
-  )
 }
 
 export default App;
