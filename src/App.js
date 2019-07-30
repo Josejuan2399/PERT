@@ -17,11 +17,12 @@ import Select from '@material-ui/core/Select';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import Input from '@material-ui/core/Input';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 import './App.css';
 
 import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Activity, calculateBudget } from './logic.js';
-import { isValueInAnotherArray } from './helpers';
+import { isValueInAnotherArray, canRemoveActivity } from './helpers';
 
 let sampleData = [
   new Activity("A", 10, 100000),
@@ -97,6 +98,19 @@ function Form({ onSubmit }) {
     setData(newData);
   }
 
+  function removeActivity(activityName) {
+    let newData = [...data];
+
+    if (!canRemoveActivity(data,activityName)) {
+      alert('Esta actividad es prerequisito de otra.');
+      return;
+    };
+
+    newData = newData.filter(el => el.name !== activityName);
+    console.log(newData);
+    setData(newData);
+  } // Check if there's an activity that has this one as a prerequisite
+
   function createNewActivity() {
     setData([...data, new Activity('', 0, 0)])
   }
@@ -114,6 +128,7 @@ function Form({ onSubmit }) {
         <TableCell>Prerequisitos</TableCell>
         <TableCell>Duracion</TableCell>
         <TableCell>Costo</TableCell>
+        <TableCell>Acciones</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
@@ -136,6 +151,7 @@ function Form({ onSubmit }) {
               } </TableCell>
               <TableCell > <TextField type="number" value={act.duration} onChange={event => handleChange(event, 'duration', index)}></TextField> </TableCell>
               <TableCell > <TextField type="number" value={act.cost} onChange={event => handleChange(event, 'cost', index)}></TextField> </TableCell>
+              <TableCell> <IconButton onClick={() => removeActivity(data[index].name)} > <RemoveIcon></RemoveIcon> </IconButton> </TableCell>
             </TableRow>
           )
         })
