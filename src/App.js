@@ -7,11 +7,12 @@ import './App.css';
 
 // HELPERS
 import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Activity, calculateBudget } from './logic.js';
-
+import { isNameRepeated } from './helpers.js';
 
 // COMPONENTS
 import { Results } from './components/Results.js';
 import { Form } from './components/Form.js';
+import { SnackBarAlert } from './components/SnackBarAlert.js';
 
 import TextField from '@material-ui/core/TextField';
 
@@ -37,6 +38,8 @@ function App() {
   let [criticalPath, setCriticalPath] = useState([]);
   let [budget, setBudget] = useState([]);
   let [wasCalculated, setCalc] = useState(false);
+  let [shouldDisplayAlert, setAlert] = useState(false);
+  let [alertMsg, setAlertMsg] = useState('');
 
   const cleanUp = () => {
     let resetData = data.map(d => {
@@ -48,7 +51,21 @@ function App() {
     setData(resetData);
   }
 
-  const handleData = (data) => {
+  const isValid = () => {
+    if (isNameRepeated(data)) {
+      setAlertMsg('Hay 2 o mas actividades con el mismo nombre.');
+      setAlert(true);
+      return false;
+    }
+    return true;
+  }
+
+  const closeAlert = () => {
+    setAlert(false);
+  }
+
+  const handleData = () => {
+    if (!isValid()) return;
     cleanUp();
     setDuration(calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone));
     setCost(calculateTotalCost(data, duration, adminExpenses));
@@ -65,14 +82,21 @@ function App() {
     setData(newData);
   }
 
+  const setAlertThroughChildren = (msg) => {
+    setAlert(true);
+    setAlertMsg(msg)
+  }
+
   return (
     <div className="App">
-      <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} />
+      <h1>Metodo de la Ruta Critica</h1>
+      <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren}/>
       <TextField value={adminExpenses} onChange={handleExpenses}></TextField>
       {wasCalculated && <div>
         <div className="horizontal-divisor"></div>
         <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} />
       </div>}
+      <SnackBarAlert msg={alertMsg} open={shouldDisplayAlert} onClose={closeAlert} />
     </div>
   );
 }

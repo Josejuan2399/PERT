@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 // TABLE
 import Table from '@material-ui/core/Table';
@@ -26,8 +26,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { isValueInAnotherArray, canRemoveActivity, hasUniqueName } from '../helpers';
 import {Activity} from '../logic.js';
 
-export function Form({ onSubmit, data, setData }) {
-
+export function Form({ onSubmit, data, setData, setAlert }) {
+    
     function handleChange({ target: { value } }, key, index) {
         let newData = [...data];
         newData[index][key] = key === 'name' ? value : parseInt(value);
@@ -50,7 +50,7 @@ export function Form({ onSubmit, data, setData }) {
         let newData = [...data];
 
         if (!canRemoveActivity(data, activityName)) {
-            alert('Esta actividad es prerequisito de otra.');
+            setAlert('Esta actividad es prerequisito de otra.');
             return;
         };
 
@@ -120,7 +120,7 @@ export function Form({ onSubmit, data, setData }) {
                     <IconButton onClick={() => { createNewActivity() }}><AddIcon /></IconButton>
                 </Tooltip>
                 <Tooltip title="Calcular">
-                    <IconButton onClick={() => { onSubmit(data) }}><PlayArrowIcon /></IconButton>
+                    <IconButton onClick={() => { onSubmit() }}><PlayArrowIcon /></IconButton>
                 </Tooltip>
             </Grid>
         </TableFooter>
