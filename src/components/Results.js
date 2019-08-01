@@ -8,12 +8,12 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-export function Results({ duration, cost, criticalPath, budget }) {
+export function Results({ duration, cost, criticalPath, budget, adminExpenses }) {
     return (
         <div>
             <h1>Resultados</h1>
             <p>Duracion Total: {duration} meses</p>
-            <p>Costo Total: RD${cost}</p>
+            <p>Costo Total: RD${cost + (adminExpenses * duration)}</p>
             <span>Ruta Critica: </span>
             {criticalPath.map(element => <span>{`(${element[0].name})` + ' '}</span>)}
             <h2>Presupuesto</h2>

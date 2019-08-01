@@ -32,8 +32,7 @@ export function calculateTotalCost(activities, totalDuration, adminExpenses) {
   return (
     activities.reduce((total, { cost, duration }) => {
       return total + cost * duration;
-    }, 0) +
-    totalDuration * adminExpenses
+    }, 0)
   );
 }
 

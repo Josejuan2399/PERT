@@ -71,7 +71,7 @@ function App() {
       <TextField value={adminExpenses} onChange={handleExpenses}></TextField>
       {wasCalculated && <div>
         <div className="horizontal-divisor"></div>
-        <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} />
+        <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} />
       </div>}
     </div>
   );
