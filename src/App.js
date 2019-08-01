@@ -36,7 +36,19 @@ function App() {
   let [budget, setBudget] = useState([]);
   let [wasCalculated, setCalc] = useState(false);
 
+  const restart = () => {
+    let resetData = data.map(d => {
+      d.isDone = false;
+      return d;
+    });
+    console.log(resetData);
+    setData(resetData);
+  }
+
   const handleData = (data) => {
+    flatActivitiesDone = [];
+    groupedActivitiesDone = [[]];
+    restart();
     setDuration(calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone));
     setCost(calculateTotalCost(data, duration, adminExpenses));
     setCriticalPath(calculateCriticalPath(groupedActivitiesDone));
