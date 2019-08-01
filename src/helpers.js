@@ -18,3 +18,10 @@ export function hasUniqueName(activities, newActivityName) {
     }
     return true;
 }
+
+export function isNameRepeated(array) {
+    for (const element of array) {
+        if (array.filter(el => el.name === element.name).length >= 2) return true;
+    }
+    return false;
+}

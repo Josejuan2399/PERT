@@ -13,6 +13,8 @@ import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Acti
 import { Results } from './components/Results.js';
 import { Form } from './components/Form.js';
 
+import TextField from '@material-ui/core/TextField';
+
 let sampleData = [
   new Activity("A", 10, 100000),
   new Activity("B", 5, 500000),
@@ -36,24 +38,27 @@ function App() {
   let [budget, setBudget] = useState([]);
   let [wasCalculated, setCalc] = useState(false);
 
-  const restart = () => {
+  const cleanUp = () => {
     let resetData = data.map(d => {
       d.isDone = false;
       return d;
     });
-    console.log(resetData);
+    flatActivitiesDone = [];
+    groupedActivitiesDone = [[]];
     setData(resetData);
   }
 
   const handleData = (data) => {
-    flatActivitiesDone = [];
-    groupedActivitiesDone = [[]];
-    restart();
+    cleanUp();
     setDuration(calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone));
     setCost(calculateTotalCost(data, duration, adminExpenses));
     setCriticalPath(calculateCriticalPath(groupedActivitiesDone));
     setBudget(calculateBudget(groupedActivitiesDone, adminExpenses));
     setCalc(true);
+  }
+
+  const handleExpenses = ({ target: { value } }) => {
+    setExpenses(parseInt(value));
   }
 
   const setDataThroughChildren = (newData) => {
@@ -63,6 +68,7 @@ function App() {
   return (
     <div className="App">
       <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} />
+      <TextField value={adminExpenses} onChange={handleExpenses}></TextField>
       {wasCalculated && <div>
         <div className="horizontal-divisor"></div>
         <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} />
