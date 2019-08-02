@@ -163,37 +163,3 @@ function getHighestDuration(activityGroup) {
     0
   );
 }
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> SAMPLES <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-// const data = [
-//   new Activity("A", 10, 100000),
-//   new Activity("B", 5, 500000),
-//   new Activity("C", 1, 1000000, "A", "B"),
-//   new Activity("D", 9, 2000000, "C"),
-//   new Activity("E", 7, 800000, "C"),
-//   new Activity("F", 1, 1500000, "D", "E"),
-//   new Activity("G", 4, 600000, "D", "E"),
-//   new Activity("H", 4, 600000)
-// ];
-
-// const adminExpenses = 50000;
-
-// Basically, all activities that are done.
-// let flatActivitiesDone = [];  // Initialize like this
-// let groupedActivitiesDone = []; // Initialize like this
-
-// const totalDuration = calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone);
-// const totalCost = calculateTotalCost(data, totalDuration, adminExpenses);
-// const criticalPath = calculateCriticalPath(groupedActivitiesDone);
-// const budget = calculateBudget(groupedActivitiesDone);
-
-// console.log(groupedActivitiesDone)
-
-// console.log(totalDuration)
-// console.log(totalCost)
-// criticalPath.forEach(element => {
-//   console.log(element);
-// });
-
-// console.log(budget)

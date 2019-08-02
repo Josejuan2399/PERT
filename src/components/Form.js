@@ -45,7 +45,6 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
         let newData = [...data];
         newData[index].pre = newData[index].pre.filter(el => el !== activityName);
         setData(newData);
-        console.log(newData);
     }
 
     function removeActivity(activityName) {

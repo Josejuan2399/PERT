@@ -27,7 +27,6 @@ export function isNameRepeated(array) {
 }
 
 export function isAnyFieldEmpty(array) {
-    console.log(array);
     for (const { name, cost, duration } of array) {
         if (name === ''
             || isNaN(cost)
