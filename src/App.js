@@ -6,7 +6,7 @@ import React, {
 import './App.css';
 
 // HELPERS
-import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Activity, calculateBudget } from './logic.js';
+import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, calculateBudget } from './logic.js';
 import { isNameRepeated, isAnyFieldEmpty } from './helpers.js';
 
 // COMPONENTS
@@ -15,25 +15,13 @@ import { Form } from './components/Form.js';
 import { SnackBarAlert } from './components/SnackBarAlert.js';
 
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-
-let sampleData = [
-  new Activity("A", 10, 100000),
-  new Activity("B", 5, 500000),
-  new Activity("C", 1, 1000000, "A", "B"),
-  new Activity("D", 9, 2000000, "C"),
-  new Activity("E", 7, 800000, "C"),
-  new Activity("F", 1, 1500000, "D", "E"),
-  new Activity("G", 4, 600000, "D", "E")
-];
 
 let flatActivitiesDone = [];
 let groupedActivitiesDone = [[]];
-let sampleAdminExpenses = 50000;
 
 function App() {
-  let [data, setData] = useState(sampleData);
-  let [adminExpenses, setExpenses] = useState(sampleAdminExpenses);
+  let [data, setData] = useState([]);
+  let [adminExpenses, setExpenses] = useState(0);
   let [cost, setCost] = useState(0);
   let [duration, setDuration] = useState(0);
   let [criticalPath, setCriticalPath] = useState();

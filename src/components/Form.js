@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect } from 'react';
 
 // TABLE
 import Table from '@material-ui/core/Table';
@@ -24,11 +24,11 @@ import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 
 // HELPERS
-import { isValueInAnotherArray, canRemoveActivity, hasUniqueName } from '../helpers';
-import {Activity} from '../logic.js';
+import { isValueInAnotherArray, canRemoveActivity } from '../helpers';
+import { Activity } from '../logic.js';
 
 export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleExpenses }) {
-    
+
     function handleChange({ target: { value } }, key, index) {
         let newData = [...data];
         newData[index][key] = key === 'name' ? value : parseInt(value);
@@ -59,13 +59,12 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
         setData(newData);
     } // Check if there's an activity that has this one as a prerequisite
 
-    function createNewActivity() {        
-        setData([...data, new Activity("", 0, 0)]);
+    function createNewActivity() {
+        setData([...data, new Activity()]);
     }
 
     useEffect(() => {
-        // createNewActivity();
-        // createNewActivity();
+        createNewActivity();
     }, [])
 
 
@@ -99,7 +98,7 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
                                                 </div>
                                             )
                                         }
-                                         // The way that already selected values will be rendered
+                                    // The way that already selected values will be rendered
                                     >
                                         {/* Handles Values in the Selection Menu */}
                                         {data.map(({ name }) => (name !== act.name && isValueInAnotherArray(data[index].pre, name)) && <MenuItem value={name}>
@@ -123,8 +122,8 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
             }
         </TableBody>
         <TableFooter>
-            <Grid>
-            <TextField label="Gastos Administrativos" value={adminExpenses} onChange={handleExpenses}></TextField>
+            <Grid style={{'min-width': 265}}>
+                <TextField label="Gastos Administrativos" value={adminExpenses} onChange={handleExpenses}></TextField>
                 <Tooltip title="Agregar Actividad">
                     <IconButton onClick={() => { createNewActivity() }}><AddIcon /></IconButton>
                 </Tooltip>
@@ -136,13 +135,3 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
 
     </Table>)
 }
-
-// Probably can use this to render a Chip with delete button
-function preChip(value, handleDeleteFN = () => { }) {
-    return <Chip
-      label={value}
-      onDelete={handleDeleteFN}
-      icon={CloseIcon}
-      color="primary"
-    />
-  }

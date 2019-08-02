@@ -1,7 +1,5 @@
 
-import React, {
-    useState
-} from 'react';
+import React from 'react';
 
 import SnackBar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
@@ -10,8 +8,6 @@ import SnackbarContent from '@material-ui/core/SnackbarContent';
 import ErrorIcon from '@material-ui/icons/Error';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-import { palette } from '@material-ui/system';
-import { relative } from 'path';
 
 export function SnackBarAlert({ msg, open, onClose }) {
     return <SnackBar
@@ -25,7 +21,7 @@ export function SnackBarAlert({ msg, open, onClose }) {
             style={styles.snackbarContent}
             message={
                 <span>
-                    <ErrorIcon /> 
+                    <ErrorIcon />
                     <span style={styles.snackbarContentSpan}> {msg}</span>
                 </span>
             }
@@ -44,7 +40,7 @@ const styles = {
         backgroundColor: '#d32f2f'
     },
     snackbarContentSpan: {
-        position: 'relative', 
+        position: 'relative',
         bottom: 6
     },
     snackbar: {

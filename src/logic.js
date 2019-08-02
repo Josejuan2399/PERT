@@ -5,7 +5,7 @@
  * @param {Number} cost 
  * @param  {...String} pre 
  */
-export function Activity(name, duration, cost, ...pre) {
+export function Activity(name = "", duration = 0, cost = 0, ...pre) {
   this.name = name;
   this.duration = duration;
   this.cost = cost;
@@ -70,20 +70,13 @@ export function calculateBudget(groupedActivities, adminExpenses) {
   for (const group of groupedActivities) {
     const groupHighestDuration = getHighestDuration(group);
     for (let time = 1; time <= groupHighestDuration; time++) {
-      budget.push(adminExpenses)
+      budget.push(0)
       group.forEach(act => {
         if (time <= act.duration) budget[budget.length - 1] += act.cost;
       });
     }
   }
   return budget;
-}
-
-function resetActivities(activities) {
-  return activities.map(activity => {
-    activity.isDone = false;
-    return activity;
-  })
 }
 
 /* Helper, basically does most part of the job, i think it can explain itself.
