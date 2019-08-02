@@ -26,7 +26,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { isValueInAnotherArray, canRemoveActivity, hasUniqueName } from '../helpers';
 import {Activity} from '../logic.js';
 
-export function Form({ onSubmit, data, setData, setAlert }) {
+export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleExpenses }) {
     
     function handleChange({ target: { value } }, key, index) {
         let newData = [...data];
@@ -116,6 +116,7 @@ export function Form({ onSubmit, data, setData, setAlert }) {
         </TableBody>
         <TableFooter>
             <Grid>
+            <TextField value={adminExpenses} onChange={handleExpenses}></TextField>
                 <Tooltip title="Agregar Actividad">
                     <IconButton onClick={() => { createNewActivity() }}><AddIcon /></IconButton>
                 </Tooltip>

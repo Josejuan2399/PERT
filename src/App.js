@@ -75,6 +75,7 @@ function App() {
   }
 
   const handleExpenses = ({ target: { value } }) => {
+    if (value === '') value = 0;
     setExpenses(parseInt(value));
   }
 
@@ -90,8 +91,7 @@ function App() {
   return (
     <div className="App">
       <h1>Metodo de la Ruta Critica</h1>
-      <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren}/>
-      <TextField value={adminExpenses} onChange={handleExpenses}></TextField>
+      <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren} adminExpenses={adminExpenses} handleExpenses={handleExpenses}/>
       {wasCalculated && <div>
         <div className="horizontal-divisor"></div>
         <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} />
