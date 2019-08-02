@@ -14,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import CloseIcon from '@material-ui/icons/Close'
 
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -44,6 +45,7 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
         let newData = [...data];
         newData[index].pre = newData[index].pre.filter(el => el !== activityName);
         setData(newData);
+        console.log(newData);
     }
 
     function removeActivity(activityName) {
@@ -92,10 +94,13 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
                                         value={act.pre} // Values already Selected
                                         onChange={event => { addPre(event, index) }}
                                         renderValue={
-                                            selected => {
-                                            return selected + ''
+                                            selected => (
+                                                <div>
+                                                    {selected.map(value => <Chip color="primary" value={value} label={value} icon={CloseIcon} onDelete={() => removePre(value, index)} />)}
+                                                </div>
+                                            )
                                         }
-                                        } // The way that already selected values will be rendered
+                                         // The way that already selected values will be rendered
                                     >
                                         {/* Handles Values in the Selection Menu */}
                                         {data.map(({ name }) => (name !== act.name && isValueInAnotherArray(data[index].pre, name)) && <MenuItem value={name}>
@@ -138,6 +143,7 @@ function preChip(value, handleDeleteFN = () => { }) {
     return <Chip
       label={value}
       onDelete={handleDeleteFN}
+      icon={CloseIcon}
       color="primary"
     />
   }
