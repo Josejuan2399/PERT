@@ -20,12 +20,12 @@
     "electron": "electron .",
     "electron-start": "node src/start-react",
     "react-start": "BROWSER=none react-scripts start",
-    "pack": "build --dir",
-    "dist": "npm run build && build",
+    "pack": "electron-builder --dir",
+    "react-dist": "npm run build && build",
     "postinstall": "install-app-deps"
   },
   "build": {
-    "appId": "com.electron.electron-with-create-react-app",
+    "appId": "com.electron-react.cpm",
     "win": {
       "iconUrl": "https://cdn2.iconfinder.com/data/icons/designer-skills/128/react-256.png"
     },
