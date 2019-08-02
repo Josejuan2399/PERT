@@ -97,7 +97,7 @@ function resetActivities(activities) {
 function handleActivities(activities, flatActivitiesDone, groupedActivitiesDone) {
   //By default these grab the ones without prerequisites
   activities.forEach(activity => activity.isDone = false)
-  
+
   while (flatActivitiesDone.length !== activities.length) {
     let activitiesNotDone = activities.filter(act => !act.isDone);
     let activitiesReady = [];
@@ -129,7 +129,6 @@ function handleActivities(activities, flatActivitiesDone, groupedActivitiesDone)
       );
     }
   }
-  console.log(activities[0]);
 }
 
 /* Helper, checks the that the prerequisites of an activity, 

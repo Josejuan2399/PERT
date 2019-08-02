@@ -7,7 +7,7 @@ import './App.css';
 
 // HELPERS
 import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Activity, calculateBudget } from './logic.js';
-import { isNameRepeated, anyNameEmpty } from './helpers.js';
+import { isNameRepeated, isAnyFieldEmpty } from './helpers.js';
 
 // COMPONENTS
 import { Results } from './components/Results.js';
@@ -49,8 +49,8 @@ function App() {
       return false;
     }
 
-    if (anyNameEmpty(data)) {
-      setAlertMsg('Hay 1 o mas actividades sin nombre.');
+    if (isAnyFieldEmpty(data)) {
+      setAlertMsg('Asegurese de que los campos Nombre, Duracion y Costo no esten vacios');
       setAlert(true);
       return false;
     }

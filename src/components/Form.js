@@ -30,7 +30,6 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
     
     function handleChange({ target: { value } }, key, index) {
         let newData = [...data];
-        if (value === '' && key !== 'name') value = 0;
         newData[index][key] = key === 'name' ? value : parseInt(value);
         setData(newData);
     }
@@ -59,11 +58,8 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
         setData(newData);
     } // Check if there's an activity that has this one as a prerequisite
 
-    function createNewActivity() {
-        let newData = [...data];
-        newData.push(new Activity("", 0, 0));
-        console.log(newData)
-        setData(newData);
+    function createNewActivity() {        
+        setData([...data, new Activity("", 0, 0)]);
     }
 
     useEffect(() => {
