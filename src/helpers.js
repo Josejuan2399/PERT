@@ -25,3 +25,10 @@ export function isNameRepeated(array) {
     }
     return false;
 }
+
+export function anyNameEmpty(array) {
+    for (const element of array) {
+        if (element.name === '') return true;
+    }
+    return false;
+}

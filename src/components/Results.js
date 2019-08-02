@@ -8,9 +8,11 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import Grid from '@material-ui/core/Grid';
+
 export function Results({ duration, cost, criticalPath, budget, adminExpenses }) {
     return (
-        <div>
+        <Grid>
             <h1>Resultados</h1>
             <p>Duracion Total: {duration} meses</p>
             <p>Costo Total: RD${cost + (adminExpenses * duration)}</p>
@@ -33,6 +35,6 @@ export function Results({ duration, cost, criticalPath, budget, adminExpenses })
                     })}
                 </TableBody>
             </Table>
-        </div>
+        </Grid>
     )
 }

@@ -28,7 +28,7 @@ we must do some checks:
  * @param {Number} adminExpenses 
  * @param {Number} totalDuration 
  */
-export function calculateTotalCost(activities, totalDuration, adminExpenses) {
+export function calculateTotalCost(activities) {
   return (
     activities.reduce((total, { cost, duration }) => {
       return total + cost * duration;
@@ -57,6 +57,7 @@ export function calculateTotalDuration(activities, groupedActivitiesDone, flatAc
  * @param {Array<Array<Activity>>} groupedActivitiesDone 
  */
 export function calculateCriticalPath(groupedActivitiesDone) {
+  groupedActivitiesDone = groupedActivitiesDone.filter(group => group.length > 0)
   return groupedActivitiesDone
     .map(group => {
       return group.filter(act => act.duration === getHighestDuration(group))
@@ -78,6 +79,13 @@ export function calculateBudget(groupedActivities, adminExpenses) {
   return budget;
 }
 
+function resetActivities(activities) {
+  return activities.map(activity => {
+    activity.isDone = false;
+    return activity;
+  })
+}
+
 /* Helper, basically does most part of the job, i think it can explain itself.
  */
 /**
@@ -88,19 +96,22 @@ export function calculateBudget(groupedActivities, adminExpenses) {
  */
 function handleActivities(activities, flatActivitiesDone, groupedActivitiesDone) {
   //By default these grab the ones without prerequisites
-
+  activities.forEach(activity => activity.isDone = false)
+  
   while (flatActivitiesDone.length !== activities.length) {
     let activitiesNotDone = activities.filter(act => !act.isDone);
     let activitiesReady = [];
     let indexOfActivity;
-
+    
+    groupedActivitiesDone.push([]);
+    
     // Check for activities that are ready to be processed / checkForReadyActivities / Helper
     for (const activity of activitiesNotDone) {
       if (canActivityProceed(activity, flatActivitiesDone)) {
         activitiesReady.push(activity.name);
       }
     }
-
+    
     if (activitiesReady.length === 0) {
       console.error("There's an activity with invalid prerrequisites");
       return;
@@ -117,9 +128,8 @@ function handleActivities(activities, flatActivitiesDone, groupedActivitiesDone)
         activities[indexOfActivity]
       );
     }
-    if (indexOfActivity !== activities.length - 1)
-      groupedActivitiesDone.push([]);
   }
+  console.log(activities[0]);
 }
 
 /* Helper, checks the that the prerequisites of an activity, 
@@ -131,20 +141,14 @@ returns true if all of its prerequisites are already done, else returns false.*/
  * @param {Array<Activity>} activitiesDone 
  */
 function canActivityProceed(currentActivity, flatActivitiesDone) {
-  /* If the required activities are more than the ones done, then 
-  the current one is not eligible just yet.*/
-  if (currentActivity.pre.length > flatActivitiesDone.length) return false;
-  else {
-    /* If there are more than one pre required activity, then we must check
-  that all of them are in the flatActivitiesDone List. */
-    for (const currentPre of currentActivity.pre) {
-      const canBeProceeded = !!flatActivitiesDone.find(act => {
-        return act.name === currentPre;
-      });
-      if (canBeProceeded) {
-        continue;
-      } else return false;
-    }
+  if (currentActivity.pre.length === 0) return true;
+  for (const currentPre of currentActivity.pre) {
+    const canBeProceeded = !!flatActivitiesDone.find(act => {
+      return act.name === currentPre;
+    });
+    if (canBeProceeded) {
+      continue;
+    } else return false;
   }
   return true;
 }
@@ -170,24 +174,27 @@ function getHighestDuration(activityGroup) {
 //   new Activity("D", 9, 2000000, "C"),
 //   new Activity("E", 7, 800000, "C"),
 //   new Activity("F", 1, 1500000, "D", "E"),
-//   new Activity("G", 4, 600000, "D", "E")
+//   new Activity("G", 4, 600000, "D", "E"),
+//   new Activity("H", 4, 600000)
 // ];
 
 // const adminExpenses = 50000;
 
 // Basically, all activities that are done.
 // let flatActivitiesDone = [];  // Initialize like this
-// let groupedActivitiesDone = [[]]; // Initialize like this
+// let groupedActivitiesDone = []; // Initialize like this
 
 // const totalDuration = calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone);
 // const totalCost = calculateTotalCost(data, totalDuration, adminExpenses);
 // const criticalPath = calculateCriticalPath(groupedActivitiesDone);
 // const budget = calculateBudget(groupedActivitiesDone);
 
+// console.log(groupedActivitiesDone)
+
 // console.log(totalDuration)
 // console.log(totalCost)
 // criticalPath.forEach(element => {
-//   console.log(element[0].name);
+//   console.log(element);
 // });
 
 // console.log(budget)

@@ -7,13 +7,14 @@ import './App.css';
 
 // HELPERS
 import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, Activity, calculateBudget } from './logic.js';
-import { isNameRepeated } from './helpers.js';
+import { isNameRepeated, anyNameEmpty } from './helpers.js';
 
 // COMPONENTS
 import { Results } from './components/Results.js';
 import { Form } from './components/Form.js';
 import { SnackBarAlert } from './components/SnackBarAlert.js';
 
+import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
 let sampleData = [
@@ -35,25 +36,21 @@ function App() {
   let [adminExpenses, setExpenses] = useState(sampleAdminExpenses);
   let [cost, setCost] = useState(0);
   let [duration, setDuration] = useState(0);
-  let [criticalPath, setCriticalPath] = useState([]);
+  let [criticalPath, setCriticalPath] = useState();
   let [budget, setBudget] = useState([]);
   let [wasCalculated, setCalc] = useState(false);
   let [shouldDisplayAlert, setAlert] = useState(false);
   let [alertMsg, setAlertMsg] = useState('');
 
-  const cleanUp = () => {
-    let resetData = data.map(d => {
-      d.isDone = false;
-      return d;
-    });
-    flatActivitiesDone = [];
-    groupedActivitiesDone = [[]];
-    setData(resetData);
-  }
-
   const isValid = () => {
     if (isNameRepeated(data)) {
       setAlertMsg('Hay 2 o mas actividades con el mismo nombre.');
+      setAlert(true);
+      return false;
+    }
+
+    if (anyNameEmpty(data)) {
+      setAlertMsg('Hay 1 o mas actividades sin nombre.');
       setAlert(true);
       return false;
     }
@@ -64,13 +61,14 @@ function App() {
     setAlert(false);
   }
 
-  const handleData = () => {
+  function handleData() {
     if (!isValid()) return;
-    cleanUp();
     setDuration(calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone));
-    setCost(calculateTotalCost(data, duration, adminExpenses));
     setCriticalPath(calculateCriticalPath(groupedActivitiesDone));
+    setCost(calculateTotalCost(data));
     setBudget(calculateBudget(groupedActivitiesDone, adminExpenses));
+    flatActivitiesDone = [];
+    groupedActivitiesDone = [[]];
     setCalc(true);
   }
 
@@ -89,15 +87,14 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <Grid className="App">
       <h1>Metodo de la Ruta Critica</h1>
-      <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren} adminExpenses={adminExpenses} handleExpenses={handleExpenses}/>
+      <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren} adminExpenses={adminExpenses} handleExpenses={handleExpenses} />
       {wasCalculated && <div>
-        <div className="horizontal-divisor"></div>
         <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} />
       </div>}
       <SnackBarAlert msg={alertMsg} open={shouldDisplayAlert} onClose={closeAlert} />
-    </div>
+    </Grid>
   );
 }
 

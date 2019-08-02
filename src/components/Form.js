@@ -30,6 +30,7 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
     
     function handleChange({ target: { value } }, key, index) {
         let newData = [...data];
+        if (value === '' && key !== 'name') value = 0;
         newData[index][key] = key === 'name' ? value : parseInt(value);
         setData(newData);
     }
@@ -59,7 +60,10 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
     } // Check if there's an activity that has this one as a prerequisite
 
     function createNewActivity() {
-        setData([...data, new Activity('', 0, 0)])
+        let newData = [...data];
+        newData.push(new Activity("", 0, 0));
+        console.log(newData)
+        setData(newData);
     }
 
     useEffect(() => {
@@ -82,16 +86,20 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
             {
                 data.map((act, index) => {
                     return (
-                        <TableRow>
+                        <TableRow key={index}>
                             <TableCell >
-                                <TextField value={act.name} onChange={event => handleChange(event, 'name', index)}></TextField>
+                                <TextField required={true} value={act.name} onChange={event => handleChange(event, 'name', index)}></TextField>
                             </TableCell>
-                            <TableCell>
+                            <TableCell >
                                 {index !== 0 &&
                                     <Select
                                         value={act.pre} // Values already Selected
                                         onChange={event => { addPre(event, index) }}
-                                        renderValue={selected => <div>{selected + ''}</div>} // The way that already selected values will be rendered
+                                        renderValue={
+                                            selected => {
+                                            return selected + ''
+                                        }
+                                        } // The way that already selected values will be rendered
                                     >
                                         {/* Handles Values in the Selection Menu */}
                                         {data.map(({ name }) => (name !== act.name && isValueInAnotherArray(data[index].pre, name)) && <MenuItem value={name}>
@@ -116,7 +124,7 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
         </TableBody>
         <TableFooter>
             <Grid>
-            <TextField value={adminExpenses} onChange={handleExpenses}></TextField>
+            <TextField label="Gastos Administrativos" value={adminExpenses} onChange={handleExpenses}></TextField>
                 <Tooltip title="Agregar Actividad">
                     <IconButton onClick={() => { createNewActivity() }}><AddIcon /></IconButton>
                 </Tooltip>
