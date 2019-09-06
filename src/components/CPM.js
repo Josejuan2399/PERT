@@ -17,17 +17,22 @@ import { SnackBarAlert } from './SnackBarAlert.js';
 import Grid from '@material-ui/core/Grid';
 
 export default function CPM() {
+    // Helpers
     let flatActivitiesDone = [];
     let groupedActivitiesDone = [[]];
-    let [data, setData] = useState([]);
-    let [adminExpenses, setExpenses] = useState(0);
-    let [cost, setCost] = useState(0);
-    let [duration, setDuration] = useState(0);
-    let [criticalPath, setCriticalPath] = useState();
-    let [budget, setBudget] = useState([]);
     let [wasCalculated, setCalc] = useState(false);
     let [shouldDisplayAlert, setAlert] = useState(false);
     let [alertMsg, setAlertMsg] = useState('');
+    
+    // Inputs
+    let [adminExpenses, setExpenses] = useState(0);
+    let [budget, setBudget] = useState([]);
+    let [data, setData] = useState([]);
+
+    // Results
+    let [cost, setCost] = useState(0);
+    let [criticalPath, setCriticalPath] = useState();
+    let [duration, setDuration] = useState(0);
 
     const isValid = () => {
         if (isNameRepeated(data)) {
