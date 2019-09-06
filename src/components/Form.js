@@ -24,8 +24,8 @@ import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 
 // HELPERS
-import { isValueInAnotherArray, canRemoveActivity } from '../helpers';
-import { Activity } from '../logic.js';
+import { isValueInAnotherArray, canRemoveActivity } from '../functions/helpers.js';
+import { Activity } from '../functions/logic.js';
 
 export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleExpenses }) {
 

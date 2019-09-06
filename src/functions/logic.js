@@ -95,16 +95,16 @@ function handleActivities(activities, flatActivitiesDone, groupedActivitiesDone)
     let activitiesNotDone = activities.filter(act => !act.isDone);
     let activitiesReady = [];
     let indexOfActivity;
-    
+
     groupedActivitiesDone.push([]);
-    
+
     // Check for activities that are ready to be processed / checkForReadyActivities / Helper
     for (const activity of activitiesNotDone) {
       if (canActivityProceed(activity, flatActivitiesDone)) {
         activitiesReady.push(activity.name);
       }
     }
-    
+
     if (activitiesReady.length === 0) {
       console.error("There's an activity with invalid prerrequisites");
       return;
