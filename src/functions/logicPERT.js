@@ -8,17 +8,11 @@
 export function Activity(name = "", duration = 0, cost = 0, ...pre) {
   this.name = name;
   this.duration = duration;
+  this.durations = {worst: 0, medium: 0, best: 0};
   this.cost = cost;
   this.pre = pre;
   this.isDone = false;
 }
-
-/* When we are entering data and before we start to calculate, 
-we must do some checks: 
-
-- Check that there's at least 1 activity with no prerequirements
-- Check that all prerequirements have been declared as an activity
- */
 
 // Main
 
@@ -156,3 +150,17 @@ function getHighestDuration(activityGroup) {
     0
   );
 }
+
+function calculateExpectedTime({worst, medium, best}) {
+  // Formula given by Edward
+  const result = worst + (4 * medium) + best;
+  return result;
+}
+
+function calculateVExpectedTime({worst, best}) {
+  // Formula given by Edward
+  const result = ((best - worst) / 6);
+  return Math.pow(result, 2);
+}
+
+
