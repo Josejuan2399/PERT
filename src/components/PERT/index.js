@@ -3,16 +3,16 @@ import React, {
 } from 'react';
 
 // STYLES
-import './PERT.css';
+import './styles.css';
 
 // HELPERS
-import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, calculateBudget } from '../functions/logicPERT.js';
-import { isNameRepeated, isAnyFieldEmpty } from '../functions/helpers.js';
+import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, calculateBudget } from './functions/logicPERT.js';
+import { isNameRepeated, isAnyFieldEmpty } from '../../functions/helpers.js';
 
 // COMPONENTS
-import { Results } from './Results.js';
-import { Form } from './Form.js';
-import { SnackBarAlert } from './SnackBarAlert.js';
+import { Results } from '../Results.js';
+import { Form } from '../Form.js';
+import { SnackBarAlert } from '../SnackBarAlert.js';
 
 import Grid from '@material-ui/core/Grid';
 
