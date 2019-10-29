@@ -2,10 +2,13 @@ import React, {
   useState
 } from 'react';
 
-import CPM from './components/CPM';
+// import CPM from './components/CPM';
+import PERT from './components/PERT'
 
 function App() {
-  return (<CPM />)
+  return (<div>
+    <PERT />
+  </div>)
 }
 
 export default App;
