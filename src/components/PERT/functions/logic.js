@@ -9,7 +9,7 @@ import { tsThisType } from "@babel/types";
 export class Activity {
   constructor(name, worst, medium, best, cost, ...pre) {
     this.name = name;
-    this.durations = {worst, medium, best};
+    this.durations = { worst, medium, best };
     this.cost = cost;
     this.pre = [...pre];
     this.isDone = false;
@@ -81,14 +81,14 @@ export class PertData {
     }
     this.budget = budget;
   }
-  
+
   setExpectedTimes() {
     this.activities.forEach(act => {
       act.expectedTime = this.calculateExpectedTime(act.durations)
       act.vExpectedTime = this.calculateVExpectedTime(act.durations)
     });
   }
-  
+
   sumExpectedTimes() {
     const result = this.criticalPath.reduce((total, act) => total += act[0].vExpectedTime, 0);
     this.sumOfExpectedTime = Math.pow(result, 0.5).toFixed(2);
@@ -99,26 +99,26 @@ export class PertData {
     this.groupedActivitiesDone = [[]];
     //By default these grab the ones without prerequisites
     this.activities.forEach(activity => activity.isDone = false)
-  
+
     while (this.flatActivitiesDone.length !== this.activities.length) {
       let activitiesNotDone = this.activities.filter(act => !act.isDone);
       let activitiesReady = [];
       let indexOfActivity;
-  
+
       this.groupedActivitiesDone.push([]);
-  
+
       // Check for activities that are ready to be processed / checkForReadyActivities / Helper
       for (const activity of activitiesNotDone) {
         if (this.canActivityProceed(activity)) {
           activitiesReady.push(activity.name);
         }
       }
-  
+
       if (activitiesReady.length === 0) {
         console.error("There's an activity with invalid prerrequisites");
         return;
       }
-  
+
       // Handles activities that are ready / handleReadyActivities / Helper
       for (const activity of activitiesReady) {
         indexOfActivity = this.activities.findIndex(act => {
@@ -156,14 +156,14 @@ export class PertData {
   }
 
   // Helper
-  calculateExpectedTime({worst, medium, best}) {
+  calculateExpectedTime({ worst, medium, best }) {
     // Formula given by Edward
     const result = worst + (4 * medium) + best;
     return result / 6;
   }
-  
+
   // Helper
-  calculateVExpectedTime({worst, best}) {
+  calculateVExpectedTime({ worst, best }) {
     // Formula given by Edward
     const result = ((best - worst) / 6);
     return Math.pow(result, 2);

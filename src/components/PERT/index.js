@@ -24,12 +24,12 @@ const mock = [
     new Activity('E', 3, 4, 5, 700000, 'D')
 ]
 
-export default function PERT({label}) {
+export default function PERT({ label }) {
     // Helpers
     let [wasCalculated, setCalc] = useState(false);
     let [shouldDisplayAlert, setAlert] = useState(false);
     let [alertMsg, setAlertMsg] = useState('');
-    
+
     // Inputs
     let [adminExpenses, setExpenses] = useState(35000);
     let [budget, setBudget] = useState([]);

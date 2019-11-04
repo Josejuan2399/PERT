@@ -7,8 +7,8 @@ import PERT from './components/PERT'
 
 function App() {
   return (<div>
-    <PERT label="Normal"/>
-    <PERT label="Reducido"/>
+    <PERT label="Normal" />
+    <PERT label="Reducido" />
   </div>)
 }
 

@@ -27,7 +27,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { isValueInAnotherArray, canRemoveActivity } from '../../functions/helpers.js';
 import { Activity } from './functions/logic.js';
 
-function PreChips({data, act, index, addPre, removePre}) {
+function PreChips({ data, act, index, addPre, removePre }) {
     return <TableCell >
         {index !== 0 &&
             <Select
@@ -118,7 +118,7 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
                             <TableCell >
                                 <TextField required={true} value={act.name} onChange={event => handleChange(event, 'name', index)}></TextField>
                             </TableCell>
-                            <PreChips data={data} act={act} index={index} addPre={addPre} removePre={removePre}/>
+                            <PreChips data={data} act={act} index={index} addPre={addPre} removePre={removePre} />
                             <TableCell >
                                 <TextField type="number" value={act.durations.worst} onChange={event => handleDurationChange(event, 'worst', index)}></TextField>
                             </TableCell>
@@ -140,7 +140,7 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
             }
         </TableBody>
         <TableFooter>
-            <Grid style={{'min-width': 265}}>
+            <Grid style={{ 'min-width': 265 }}>
                 <TextField label="Gastos Administrativos" value={adminExpenses} onChange={handleExpenses}></TextField>
                 <Tooltip title="Agregar Actividad">
                     <IconButton onClick={() => { createNewActivity() }}><AddIcon /></IconButton>
