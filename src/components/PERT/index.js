@@ -24,7 +24,7 @@ const mock = [
     new Activity('E', 3, 4, 5, 700000, 'D')
 ]
 
-export default function PERT() {
+export default function PERT({label}) {
     // Helpers
     let [wasCalculated, setCalc] = useState(false);
     let [shouldDisplayAlert, setAlert] = useState(false);
@@ -86,7 +86,7 @@ export default function PERT() {
 
     return (
         <Grid className="App">
-            <h1>PERT</h1>
+            <h1>{label}</h1>
             <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren} adminExpenses={adminExpenses} handleExpenses={handleExpenses} />
             {wasCalculated && <div>
                 <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} />
