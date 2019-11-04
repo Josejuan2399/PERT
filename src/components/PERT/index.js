@@ -6,7 +6,7 @@ import React, {
 import './styles.css';
 
 // HELPERS
-import { setupActivities,calculateTotalCost, calculateTotalDuration, calculateCriticalPath, calculateBudget, Activity, setExpectedTimes, sumExpectedTimes } from './functions/logic.js';
+import { Activity, PertData } from './functions/logic.js';
 import { isNameRepeated, isAnyFieldEmpty } from '../../functions/helpers.js';
 
 // COMPONENTS
@@ -39,6 +39,9 @@ export default function PERT({label}) {
     let [cost, setCost] = useState(0);
     let [criticalPath, setCriticalPath] = useState([]);
     let [duration, setDuration] = useState(0);
+    let [expectedTime, setExpectedTime] = useState(0);
+
+    let [Perti, setPerti] = useState();
 
     const isValid = () => {
         if (isNameRepeated(data)) {
@@ -61,14 +64,19 @@ export default function PERT({label}) {
 
     function handleData() {
         if (!isValid()) return;
-        setupActivities(data);
-        setData(setExpectedTimes(data));
-        setDuration(calculateTotalDuration());
-        setCriticalPath(calculateCriticalPath());
-        setCost(calculateTotalCost(data));
-        setBudget(calculateBudget(adminExpenses));
-        setCalc(true);
+        setPerti(new PertData(adminExpenses, ...data));
     }
+
+    useEffect(() => {
+        if (!Perti) return;
+        Perti.doAll();
+        setDuration(Perti.totalDuration);
+        setCriticalPath(Perti.criticalPath);
+        setCost(Perti.totalCost);
+        setBudget(Perti.budget);
+        setExpectedTime(Perti.sumOfExpectedTime);
+        setCalc(true);
+    }, [Perti])
 
     const handleExpenses = ({ target: { value } }) => {
         if (value === '') value = 0;
@@ -89,7 +97,7 @@ export default function PERT({label}) {
             <h1>{label}</h1>
             <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren} adminExpenses={adminExpenses} handleExpenses={handleExpenses} />
             {wasCalculated && <div>
-                <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} />
+                <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} expectedTime={expectedTime} />
             </div>}
             <SnackBarAlert msg={alertMsg} open={shouldDisplayAlert} onClose={closeAlert} />
         </Grid>

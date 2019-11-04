@@ -32,12 +32,12 @@ function BudgetTable({ budget, adminExpenses }) {
     </div>)
 }
 
-export function Results({ duration, cost, criticalPath, adminExpenses }) {
+export function Results({ duration, cost, criticalPath, expectedTime }) {
     return (
         <Grid>
             <h1>Resultados</h1>
-            <p>Duracion Total: {duration} &#177; {sumExpectedTimes(criticalPath)} meses</p>
-            <p>Costo Total: RD${cost + (adminExpenses * duration)}</p>
+            <p>Duracion Total: {duration} &#177; {expectedTime} meses</p>
+            <p>Costo Total: RD${cost}</p>
             <span>Ruta Critica: </span>
             {criticalPath.map(element => <span>{`(${element[0].name})`}</span>)}
         </Grid>
