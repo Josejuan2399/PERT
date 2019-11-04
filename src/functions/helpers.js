@@ -27,10 +27,13 @@ export function isNameRepeated(array) {
 }
 
 export function isAnyFieldEmpty(array) {
-    for (const { name, cost, duration } of array) {
+    for (const { name, cost, durations: {worst, medium, best} } of array) {
         if (name === ''
             || isNaN(cost)
-            || isNaN(duration))
+            || isNaN(worst)
+            || isNaN(medium)
+            || isNaN(best)
+            )
             return true;
     }
     return false;

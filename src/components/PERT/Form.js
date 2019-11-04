@@ -27,11 +27,41 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { isValueInAnotherArray, canRemoveActivity } from '../../functions/helpers.js';
 import { Activity } from './functions/logic.js';
 
+function PreChips({data, act, index, addPre, removePre}) {
+    return <TableCell >
+        {index !== 0 &&
+            <Select
+                value={act.pre} // Values already Selected
+                onChange={event => { addPre(event, index) }}
+                renderValue={
+                    selected => (
+                        <div>
+                            {selected.map(value => <Chip color="primary" value={value} label={value} icon={CloseIcon} onDelete={() => removePre(value, index)} />)}
+                        </div>
+                    )
+                }
+            // The way that already selected values will be rendered
+            >
+                {/* Handles Values in the Selection Menu */}
+                {data.map(({ name }) => (name !== act.name && isValueInAnotherArray(data[index].pre, name)) && <MenuItem value={name}>
+                    {name}
+                </MenuItem>)}
+            </Select>
+        }
+    </TableCell>
+}
+
 export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleExpenses }) {
 
     function handleChange({ target: { value } }, key, index) {
         let newData = [...data];
         newData[index][key] = key === 'name' ? value : parseInt(value);
+        setData(newData);
+    }
+
+    function handleDurationChange({ target: { value } }, key, index) {
+        let newData = [...data];
+        newData[index]['durations'][key] = parseInt(value);
         setData(newData);
     }
 
@@ -63,9 +93,9 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
         setData([...data, new Activity()]);
     }
 
-    useEffect(() => {
-        createNewActivity();
-    }, [])
+    // useEffect(() => {
+    //     createNewActivity();
+    // }, [])
 
 
     return (<Table className="table">
@@ -73,7 +103,9 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
             <TableRow>
                 <TableCell>Nombre</TableCell>
                 <TableCell>Prerequisitos</TableCell>
-                <TableCell>Duracion</TableCell>
+                <TableCell>Pesima</TableCell>
+                <TableCell>Media</TableCell>
+                <TableCell>Optima</TableCell>
                 <TableCell>Costo</TableCell>
                 <TableCell>Acciones</TableCell>
             </TableRow>
@@ -86,29 +118,15 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
                             <TableCell >
                                 <TextField required={true} value={act.name} onChange={event => handleChange(event, 'name', index)}></TextField>
                             </TableCell>
+                            <PreChips data={data} act={act} index={index} addPre={addPre} removePre={removePre}/>
                             <TableCell >
-                                {index !== 0 &&
-                                    <Select
-                                        value={act.pre} // Values already Selected
-                                        onChange={event => { addPre(event, index) }}
-                                        renderValue={
-                                            selected => (
-                                                <div>
-                                                    {selected.map(value => <Chip color="primary" value={value} label={value} icon={CloseIcon} onDelete={() => removePre(value, index)} />)}
-                                                </div>
-                                            )
-                                        }
-                                    // The way that already selected values will be rendered
-                                    >
-                                        {/* Handles Values in the Selection Menu */}
-                                        {data.map(({ name }) => (name !== act.name && isValueInAnotherArray(data[index].pre, name)) && <MenuItem value={name}>
-                                            {name}
-                                        </MenuItem>)}
-                                    </Select>
-                                }
+                                <TextField type="number" value={act.durations.worst} onChange={event => handleDurationChange(event, 'worst', index)}></TextField>
                             </TableCell>
                             <TableCell >
-                                <TextField type="number" value={act.duration} onChange={event => handleChange(event, 'duration', index)}></TextField>
+                                <TextField type="number" value={act.durations.medium} onChange={event => handleDurationChange(event, 'medium', index)}></TextField>
+                            </TableCell>
+                            <TableCell >
+                                <TextField type="number" value={act.durations.best} onChange={event => handleDurationChange(event, 'best', index)}></TextField>
                             </TableCell>
                             <TableCell >
                                 <TextField type="number" value={act.cost} onChange={event => handleChange(event, 'cost', index)}></TextField>

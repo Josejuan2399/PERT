@@ -1,12 +1,12 @@
 import React, {
-    useState
+    useState, useEffect
 } from 'react';
 
 // STYLES
 import './styles.css';
 
 // HELPERS
-import { calculateTotalCost, calculateTotalDuration, calculateCriticalPath, calculateBudget } from './functions/logic.js';
+import { setupActivities,calculateTotalCost, calculateTotalDuration, calculateCriticalPath, calculateBudget, Activity, setExpectedTimes, sumExpectedTimes } from './functions/logic.js';
 import { isNameRepeated, isAnyFieldEmpty } from '../../functions/helpers.js';
 
 // COMPONENTS
@@ -16,22 +16,28 @@ import { SnackBarAlert } from '../Global/SnackBarAlert.js';
 
 import Grid from '@material-ui/core/Grid';
 
+const mock = [
+    new Activity('A', 1, 2, 3, 100000),
+    new Activity('B', 4, 5, 6, 1000000, 'A'),
+    new Activity('C', 2, 3, 4, 500000, 'A'),
+    new Activity('D', 5, 6, 7, 900000, 'B', 'C'),
+    new Activity('E', 3, 4, 5, 700000, 'D')
+]
+
 export default function PERT() {
     // Helpers
-    let flatActivitiesDone = [];
-    let groupedActivitiesDone = [[]];
     let [wasCalculated, setCalc] = useState(false);
     let [shouldDisplayAlert, setAlert] = useState(false);
     let [alertMsg, setAlertMsg] = useState('');
     
     // Inputs
-    let [adminExpenses, setExpenses] = useState(0);
+    let [adminExpenses, setExpenses] = useState(35000);
     let [budget, setBudget] = useState([]);
-    let [data, setData] = useState([]);
+    let [data, setData] = useState(mock);
 
     // Results
     let [cost, setCost] = useState(0);
-    let [criticalPath, setCriticalPath] = useState();
+    let [criticalPath, setCriticalPath] = useState([]);
     let [duration, setDuration] = useState(0);
 
     const isValid = () => {
@@ -55,12 +61,12 @@ export default function PERT() {
 
     function handleData() {
         if (!isValid()) return;
-        setDuration(calculateTotalDuration(data, groupedActivitiesDone, flatActivitiesDone));
-        setCriticalPath(calculateCriticalPath(groupedActivitiesDone));
+        setupActivities(data);
+        setData(setExpectedTimes(data));
+        setDuration(calculateTotalDuration());
+        setCriticalPath(calculateCriticalPath());
         setCost(calculateTotalCost(data));
-        setBudget(calculateBudget(groupedActivitiesDone, adminExpenses));
-        flatActivitiesDone = [];
-        groupedActivitiesDone = [[]];
+        setBudget(calculateBudget(adminExpenses));
         setCalc(true);
     }
 
@@ -80,7 +86,7 @@ export default function PERT() {
 
     return (
         <Grid className="App">
-            <h1>Metodo de la Ruta Critica</h1>
+            <h1>PERT</h1>
             <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren} adminExpenses={adminExpenses} handleExpenses={handleExpenses} />
             {wasCalculated && <div>
                 <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} />

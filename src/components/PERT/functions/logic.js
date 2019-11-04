@@ -5,14 +5,18 @@
  * @param {Number} cost 
  * @param  {...String} pre 
  */
-export function Activity(name = "", duration = 0, cost = 0, ...pre) {
+export function Activity(name, worst, medium, best, cost, ...pre) {
   this.name = name;
-  this.duration = duration;
-  this.durations = {worst: 0, medium: 0, best: 0};
+  this.durations = {worst, medium, best};
   this.cost = cost;
-  this.pre = pre;
+  this.pre = [...pre];
   this.isDone = false;
+  this.expectedTime = 0;
+  this.vExpectedTime = 0;
 }
+
+let flatActivitiesDone = [];
+let groupedActivitiesDone = [[]];
 
 // Main
 
@@ -24,8 +28,8 @@ export function Activity(name = "", duration = 0, cost = 0, ...pre) {
  */
 export function calculateTotalCost(activities) {
   return (
-    activities.reduce((total, { cost, duration }) => {
-      return total + cost * duration;
+    activities.reduce((total, { cost, durations }) => {
+      return total + cost * durations.medium;
     }, 0)
   );
 }
@@ -36,8 +40,7 @@ export function calculateTotalCost(activities) {
  * @param {Array<Activity>} activities 
  * @param {Array<Array<Activity>>} groupedActivitiesDone 
  */
-export function calculateTotalDuration(activities, groupedActivitiesDone, flatActivitiesDone) {
-  handleActivities(activities, flatActivitiesDone, groupedActivitiesDone);
+export function calculateTotalDuration() {
   return groupedActivitiesDone
     .map(group => {
       return getHighestDuration(group);
@@ -50,23 +53,23 @@ export function calculateTotalDuration(activities, groupedActivitiesDone, flatAc
  * 
  * @param {Array<Array<Activity>>} groupedActivitiesDone 
  */
-export function calculateCriticalPath(groupedActivitiesDone) {
+export function calculateCriticalPath() {
   groupedActivitiesDone = groupedActivitiesDone.filter(group => group.length > 0)
   return groupedActivitiesDone
     .map(group => {
-      return group.filter(act => act.duration === getHighestDuration(group))
+      return group.filter(act => act.durations.medium === getHighestDuration(group))
     });
 }
 
 // Main
-export function calculateBudget(groupedActivities, adminExpenses) {
+export function calculateBudget() {
   const budget = []
-  for (const group of groupedActivities) {
+  for (const group of groupedActivitiesDone) {
     const groupHighestDuration = getHighestDuration(group);
     for (let time = 1; time <= groupHighestDuration; time++) {
       budget.push(0)
       group.forEach(act => {
-        if (time <= act.duration) budget[budget.length - 1] += act.cost;
+        if (time <= act.durations.medium) budget[budget.length - 1] += act.cost;
       });
     }
   }
@@ -81,7 +84,7 @@ export function calculateBudget(groupedActivities, adminExpenses) {
  * @param {Array<Activity>} flatActivitiesDone 
  * @param {Array<Activity>} groupedActivitiesDone 
  */
-function handleActivities(activities, flatActivitiesDone, groupedActivitiesDone) {
+export function setupActivities(activities) {
   //By default these grab the ones without prerequisites
   activities.forEach(activity => activity.isDone = false)
 
@@ -126,7 +129,7 @@ returns true if all of its prerequisites are already done, else returns false.*/
  * @param {Activity} currentActivity 
  * @param {Array<Activity>} activitiesDone 
  */
-function canActivityProceed(currentActivity, flatActivitiesDone) {
+function canActivityProceed(currentActivity) {
   if (currentActivity.pre.length === 0) return true;
   for (const currentPre of currentActivity.pre) {
     const canBeProceeded = !!flatActivitiesDone.find(act => {
@@ -146,7 +149,7 @@ function canActivityProceed(currentActivity, flatActivitiesDone) {
  */
 function getHighestDuration(activityGroup) {
   return activityGroup.reduce(
-    (max, { duration }) => (duration > max ? duration : max),
+    (max, { durations }) => (durations.medium > max ? durations.medium : max),
     0
   );
 }
@@ -154,7 +157,7 @@ function getHighestDuration(activityGroup) {
 function calculateExpectedTime({worst, medium, best}) {
   // Formula given by Edward
   const result = worst + (4 * medium) + best;
-  return result;
+  return result / 6;
 }
 
 function calculateVExpectedTime({worst, best}) {
@@ -163,4 +166,15 @@ function calculateVExpectedTime({worst, best}) {
   return Math.pow(result, 2);
 }
 
+export function setExpectedTimes(activities) {
+  activities.forEach(act => {
+    act.expectedTime = calculateExpectedTime(act.durations)
+    act.vExpectedTime = calculateVExpectedTime(act.durations)
+  });
+  return activities;
+}
 
+export function sumExpectedTimes(criticalPath) {
+  const result = criticalPath.reduce((total, act) => total += act[0].vExpectedTime, 0);
+  return Math.pow(result, 0.5).toFixed(2);
+}

@@ -3,7 +3,6 @@
 }
 
 .table {
-  max-width: 80%;
   margin: 5px auto;
   background-color: white;
 }
@@ -20,4 +19,5 @@
 
 html {
   background-color: #f7f7f7;
+  padding: 50px 50px;
 }

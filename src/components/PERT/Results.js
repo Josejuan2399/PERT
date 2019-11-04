@@ -8,31 +8,38 @@ import TableRow from '@material-ui/core/TableRow';
 
 import Grid from '@material-ui/core/Grid';
 
-export function Results({ duration, cost, criticalPath, budget, adminExpenses }) {
+import { sumExpectedTimes } from './functions/logic.js';
+
+function BudgetTable({ budget, adminExpenses }) {
+    return (<div>
+        <h2>Presupuesto</h2>
+        <Table className="table-sm">
+            <TableHead>
+                <TableRow>
+                    <TableCell className="table-cell-sm">Mes</TableCell>
+                    <TableCell>Costo</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {budget.map((elem, index) => {
+                    return <TableRow>
+                        <TableCell>{index + 1}.</TableCell>
+                        <TableCell>RD${elem + adminExpenses}</TableCell>
+                    </TableRow>
+                })}
+            </TableBody>
+        </Table>
+    </div>)
+}
+
+export function Results({ duration, cost, criticalPath, adminExpenses }) {
     return (
         <Grid>
             <h1>Resultados</h1>
-            <p>Duracion Total: {duration} meses</p>
+            <p>Duracion Total: {duration} &#177; {sumExpectedTimes(criticalPath)} meses</p>
             <p>Costo Total: RD${cost + (adminExpenses * duration)}</p>
             <span>Ruta Critica: </span>
             {criticalPath.map(element => <span>{`(${element[0].name})`}</span>)}
-            <h2>Presupuesto</h2>
-            <Table className="table-sm">
-                <TableHead>
-                    <TableRow>
-                        <TableCell className="table-cell-sm">Mes</TableCell>
-                        <TableCell>Costo</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {budget.map((elem, index) => {
-                        return <TableRow>
-                            <TableCell>{index + 1}.</TableCell>
-                            <TableCell>RD${elem + adminExpenses}</TableCell>
-                        </TableRow>
-                    })}
-                </TableBody>
-            </Table>
         </Grid>
     )
 }
