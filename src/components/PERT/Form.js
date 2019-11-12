@@ -53,6 +53,8 @@ function PreChips({ data, act, index, addPre, removePre }) {
 
 export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleExpenses }) {
 
+    const headers = ["Nombre", "Prerequisitos", "Pesima", "Optima", "Costo", "Acciones"]
+
     function handleChange({ target: { value } }, key, index) {
         let newData = [...data];
         newData[index][key] = key === 'name' ? value : parseInt(value);
@@ -101,13 +103,7 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
     return (<Table className="table">
         <TableHead>
             <TableRow>
-                <TableCell>Nombre</TableCell>
-                <TableCell>Prerequisitos</TableCell>
-                <TableCell>Pesima</TableCell>
-                <TableCell>Media</TableCell>
-                <TableCell>Optima</TableCell>
-                <TableCell>Costo</TableCell>
-                <TableCell>Acciones</TableCell>
+                {headers.map(head => <TableCell>{head}</TableCell>)}
             </TableRow>
         </TableHead>
         <TableBody>
