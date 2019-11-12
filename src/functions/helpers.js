@@ -26,6 +26,7 @@ export function isNameRepeated(array) {
     return false;
 }
 
+// Currently does not support duration for CPM
 export function isAnyFieldEmpty(array) {
     for (const { name, cost, durations: {worst, medium, best} } of array) {
         if (name === ''

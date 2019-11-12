@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 // TABLE
 import Table from '@material-ui/core/Table';
