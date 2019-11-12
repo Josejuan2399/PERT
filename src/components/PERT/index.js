@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import PERT from './component';
-import {Activity} from './functions/logic';
+import {Activity} from './logic';
 
 const mock = [
     new Activity('A', 1, 2, 3, 100000),

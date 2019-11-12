@@ -8,8 +8,6 @@ import TableRow from '@material-ui/core/TableRow';
 
 import Grid from '@material-ui/core/Grid';
 
-import { sumExpectedTimes } from './functions/logic.js';
-
 function BudgetTable({ budget, adminExpenses }) {
     return (<div>
         <h2>Presupuesto</h2>

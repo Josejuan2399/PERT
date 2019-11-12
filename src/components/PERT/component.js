@@ -6,7 +6,7 @@ import React, {
 import './styles.css';
 
 // HELPERS
-import { PertData } from './functions/logic.js';
+import { PertData } from './logic.js';
 import { isNameRepeated, isAnyFieldEmpty } from '../../functions/helpers.js';
 
 // COMPONENTS

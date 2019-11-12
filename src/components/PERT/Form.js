@@ -25,7 +25,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 // HELPERS
 import { isValueInAnotherArray, canRemoveActivity } from '../../functions/helpers.js';
-import { Activity } from './functions/logic.js';
+import { Activity } from './logic.js';
 
 function PreChips({ data, act, index, addPre, removePre }) {
     return <TableCell >
