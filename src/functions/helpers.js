@@ -39,3 +39,8 @@ export function isAnyFieldEmpty(array) {
     }
     return false;
 }
+
+// Taken from StackOverflow
+export function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}

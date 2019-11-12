@@ -24,9 +24,10 @@ const reducedMock = [
 export default function PERTContainer() {
   let [normalPerti, setNormalPerti] = useState();
   let [reducedPerti, setReducedPerti] = useState();
+  let [canProceedReduced, setProceed] = useState(false);
 
   return (<div>
-    <PERT reduced={false} initialData={mock} Perti={normalPerti} setPerti={setNormalPerti}/>
-    <PERT reduced={true} initialData={reducedMock} Perti={reducedPerti} setPerti={setReducedPerti} normalPerti={normalPerti}/>
+    <PERT reduced={false} initialData={mock} Perti={normalPerti} setPerti={setNormalPerti} canProceed={canProceedReduced} setProceed={setProceed}/>
+    <PERT reduced={true} initialData={reducedMock} Perti={reducedPerti} setPerti={setReducedPerti} normalPerti={normalPerti} canProceed={canProceedReduced} setProceed={setProceed}/>
   </div>)
 }

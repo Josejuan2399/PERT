@@ -17,7 +17,7 @@ import { SnackBarAlert } from '../Global/SnackBarAlert.js';
 import Grid from '@material-ui/core/Grid';
 
 
-export default function PERT({ initialData, reduced, Perti, setPerti, normalPerti }) {
+export default function PERT({ initialData, reduced, Perti, setPerti, normalPerti, canProceed, setProceed }) {
     // Helpers
     let [wasCalculated, setCalc] = useState(false);
     let [shouldDisplayAlert, setAlert] = useState(false);
@@ -46,6 +46,12 @@ export default function PERT({ initialData, reduced, Perti, setPerti, normalPert
             setAlert(true);
             return false;
         }
+
+        if (!canProceed && reduced) {
+            setAlertMsg('Primero Calcule los datos normales');
+            setAlert(true);
+            return false;
+        }
         return true;
     }
 
@@ -56,7 +62,10 @@ export default function PERT({ initialData, reduced, Perti, setPerti, normalPert
     function handleData() {
         if (!isValid()) return;
         if (reduced) setPerti(new PertData(adminExpenses, normalPerti.normalTotalCost, normalPerti.activities, ...data));
-        else setPerti(new PertData(adminExpenses, 0, [], ...data));
+        else {
+            setPerti(new PertData(adminExpenses, 0, [], ...data));
+            setProceed(true);
+        }
     }
 
     useEffect(() => {

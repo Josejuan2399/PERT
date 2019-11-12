@@ -8,6 +8,8 @@ import TableRow from '@material-ui/core/TableRow';
 
 import Grid from '@material-ui/core/Grid';
 
+import {numberWithCommas} from '../../functions/helpers';
+
 function BudgetTable({ budget, adminExpenses }) {
     return (<div>
         <h2>Presupuesto</h2>
@@ -35,7 +37,7 @@ export function Results({ duration, cost, criticalPath, expectedTime }) {
         <Grid>
             <h1>Resultados</h1>
             <p>Duracion Total: {duration} &#177; {expectedTime} meses</p>
-            <p>Costo Total: RD${cost}</p>
+            <p>Costo Total: RD${numberWithCommas(cost)}</p>
             <span>Ruta Critica: </span>
             {criticalPath.map(element => <span>{`(${element[0].name})`}</span>)}
         </Grid>
