@@ -3,12 +3,11 @@ import React, {
 } from 'react';
 
 // import CPM from './components/CPM';
-import PERT from './components/PERT'
+import PERTContainer from './components/PERT'
 
 function App() {
   return (<div>
-    <PERT label="Normal" />
-    <PERT label="Reducido" />
+    <PERTContainer />
   </div>)
 }
 
