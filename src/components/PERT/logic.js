@@ -1,5 +1,3 @@
-import { tsThisType } from "@babel/types";
-
 /**
  * @param {String} name 
  * @param {Number} duration 
@@ -23,7 +21,7 @@ export class Activity {
  * @param  {Array<Activity>} activities
  */
 export class PertData {
-  constructor(adminExpenses, ...activities) {
+  constructor(adminExpenses, normalTotalCost,normalActivities, ...activities) {
     this.adminExpenses = adminExpenses;
     this.activities = [...activities]
     this.budget = [];
@@ -33,23 +31,43 @@ export class PertData {
     this.flatActivitiesDone = [];
     this.groupedActivitiesDone = [[]];
     this.sumOfExpectedTime = 0;
+
+    // Reduced Data
+    this.normalActivities = [...normalActivities];
+    this.normalTotalCost = normalTotalCost;
+    this.reducedAmount = 0;
   }
 
-  doAll() {
+  doAll(isReduced) {
     this.setupActivities();
     this.setExpectedTimes();
     this.calculateTotalDuration();
-    this.calculateTotalCost();
+    this.calculateReducedAmount()
+    isReduced ? this.calculateReducedTotalCost() : this.calculateTotalCost()
     this.calculateBudget();
     this.calculateCriticalPath();
     this.sumExpectedTimes();
+  }
+
+  calculateReducedTotalCost() {
+    console.log(`${this.normalTotalCost} + (${this.adminExpenses} * ${this.totalDuration}) + ${this.reducedAmount}`);
+    this.totalCost = this.normalTotalCost + (this.adminExpenses * this.totalDuration) + this.reducedAmount;
   }
 
   calculateTotalCost() {
     const result = this.activities.reduce((total, { cost, durations }) => {
       return total + cost * durations.medium;
     }, 0);
+    this.normalTotalCost = result
     this.totalCost = result + (this.adminExpenses * this.totalDuration);
+  }
+
+  calculateReducedAmount() {
+    let result = 0;
+    this.normalActivities.forEach((act, index) => {
+      result += (act.expectedTime - this.activities[index].expectedTime.toFixed(2)) * this.activities[index].cost
+    });
+    this.reducedAmount = parseInt(result.toFixed(0));
   }
 
   calculateTotalDuration() {

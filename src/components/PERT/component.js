@@ -17,7 +17,7 @@ import { SnackBarAlert } from '../Global/SnackBarAlert.js';
 import Grid from '@material-ui/core/Grid';
 
 
-export default function PERT({ initialData, reduced }) {
+export default function PERT({ initialData, reduced, Perti, setPerti, normalPerti }) {
     // Helpers
     let [wasCalculated, setCalc] = useState(false);
     let [shouldDisplayAlert, setAlert] = useState(false);
@@ -33,8 +33,6 @@ export default function PERT({ initialData, reduced }) {
     let [criticalPath, setCriticalPath] = useState([]);
     let [duration, setDuration] = useState(0);
     let [expectedTime, setExpectedTime] = useState(0);
-
-    let [Perti, setPerti] = useState();
 
     const isValid = () => {
         if (isNameRepeated(data)) {
@@ -57,12 +55,13 @@ export default function PERT({ initialData, reduced }) {
 
     function handleData() {
         if (!isValid()) return;
-        setPerti(new PertData(adminExpenses, ...data));
+        if (reduced) setPerti(new PertData(adminExpenses, normalPerti.normalTotalCost, normalPerti.activities, ...data));
+        else setPerti(new PertData(adminExpenses, 0, [], ...data));
     }
 
     useEffect(() => {
         if (!Perti) return;
-        Perti.doAll();
+        Perti.doAll(reduced);
         setDuration(Perti.totalDuration);
         setCriticalPath(Perti.criticalPath);
         setCost(Perti.totalCost);
@@ -87,7 +86,7 @@ export default function PERT({ initialData, reduced }) {
 
     return (
         <Grid className="App">
-            <h1>{reduced ? 'Reducido' : 'Normal' }</h1>
+            <h1>{reduced ? 'Reducido' : 'Normal'}</h1>
             <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren} adminExpenses={adminExpenses} handleExpenses={handleExpenses} />
             {wasCalculated && <div>
                 <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} expectedTime={expectedTime} />
