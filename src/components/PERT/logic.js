@@ -1,10 +1,7 @@
-/**
- * @param {String} name 
- * @param {Number} duration 
- * @param {Number} cost 
- * @param  {...String} pre 
- */
+/* eslint-disable class-methods-use-this */
+// eslint-disable-next-line max-classes-per-file
 export class Activity {
+  // eslint-disable-next-line max-params
   constructor(name, worst, medium, best, cost, ...pre) {
     this.name = name;
     this.durations = { worst, medium, best };
@@ -17,13 +14,13 @@ export class Activity {
 }
 
 /**
- * @param {Number} adminExpenses 
+ * @param {Number} adminExpenses
  * @param  {Array<Activity>} activities
  */
 export class PertData {
   constructor(adminExpenses, normalTotalCost,normalActivities, ...activities) {
     this.adminExpenses = adminExpenses;
-    this.activities = [...activities]
+    this.activities = [...activities];
     this.budget = [];
     this.totalCost = 0;
     this.totalDuration = 0;
@@ -42,8 +39,8 @@ export class PertData {
     this.setupActivities();
     this.setExpectedTimes();
     this.calculateTotalDuration();
-    this.calculateReducedAmount()
-    isReduced ? this.calculateReducedTotalCost() : this.calculateTotalCost()
+    this.calculateReducedAmount();
+    isReduced ? this.calculateReducedTotalCost() : this.calculateTotalCost();
     this.calculateBudget();
     this.calculateCriticalPath();
     this.sumExpectedTimes();
@@ -58,14 +55,16 @@ export class PertData {
     const result = this.activities.reduce((total, { cost, durations }) => {
       return total + cost * durations.medium;
     }, 0);
-    this.normalTotalCost = result
+
+    this.normalTotalCost = result;
     this.totalCost = result + (this.adminExpenses * this.totalDuration);
   }
 
   calculateReducedAmount() {
     let result = 0;
+
     this.normalActivities.forEach((act, index) => {
-      result += (act.expectedTime - this.activities[index].expectedTime.toFixed(2)) * this.activities[index].cost
+      result += (act.expectedTime - this.activities[index].expectedTime.toFixed(2)) * this.activities[index].cost;
     });
     this.reducedAmount = parseInt(result.toFixed(0));
   }
@@ -79,19 +78,21 @@ export class PertData {
   }
 
   calculateCriticalPath() {
-    this.groupedActivitiesDone = this.groupedActivitiesDone.filter(group => group.length > 0)
+    this.groupedActivitiesDone = this.groupedActivitiesDone.filter(group => group.length > 0);
     this.criticalPath = this.groupedActivitiesDone
       .map(group => {
-        return group.filter(act => act.durations.medium === this.getHighestDuration(group))
+        return group.filter(act => act.durations.medium === this.getHighestDuration(group));
       });
   }
 
   calculateBudget() {
-    const budget = []
+    const budget = [];
+
     for (const group of this.groupedActivitiesDone) {
       const groupHighestDuration = this.getHighestDuration(group);
+
       for (let time = 1; time <= groupHighestDuration; time++) {
-        budget.push(0)
+        budget.push(0);
         group.forEach(act => {
           if (time <= act.durations.medium) budget[budget.length - 1] += act.cost;
         });
@@ -102,25 +103,27 @@ export class PertData {
 
   setExpectedTimes() {
     this.activities.forEach(act => {
-      act.expectedTime = this.calculateExpectedTime(act.durations)
-      act.vExpectedTime = this.calculateVExpectedTime(act.durations)
+      act.expectedTime = this.calculateExpectedTime(act.durations);
+      act.vExpectedTime = this.calculateVExpectedTime(act.durations);
     });
   }
 
   sumExpectedTimes() {
     const result = this.criticalPath.reduce((total, act) => total += act[0].vExpectedTime, 0);
+
     this.sumOfExpectedTime = Math.pow(result, 0.5).toFixed(2);
   }
 
   setupActivities() {
     this.flatActivitiesDone = [];
     this.groupedActivitiesDone = [[]];
-    //By default these grab the ones without prerequisites
-    this.activities.forEach(activity => activity.isDone = false)
+    // By default these grab the ones without prerequisites
+    this.activities.forEach(activity => activity.isDone = false);
 
     while (this.flatActivitiesDone.length !== this.activities.length) {
-      let activitiesNotDone = this.activities.filter(act => !act.isDone);
-      let activitiesReady = [];
+      const activitiesNotDone = this.activities.filter(act => !act.isDone),
+      activitiesReady = [];
+
       let indexOfActivity;
 
       this.groupedActivitiesDone.push([]);
@@ -158,6 +161,7 @@ export class PertData {
       const canBeProceeded = !!this.flatActivitiesDone.find(act => {
         return act.name === currentPre;
       });
+
       if (canBeProceeded) {
         continue;
       } else return false;
@@ -177,6 +181,7 @@ export class PertData {
   calculateExpectedTime({ worst, medium, best }) {
     // Formula given by Edward
     const result = worst + (4 * medium) + best;
+
     return result / 6;
   }
 
@@ -184,6 +189,7 @@ export class PertData {
   calculateVExpectedTime({ worst, best }) {
     // Formula given by Edward
     const result = ((best - worst) / 6);
+
     return Math.pow(result, 2);
   }
 }

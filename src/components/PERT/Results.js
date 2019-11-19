@@ -22,14 +22,14 @@ function BudgetTable({ budget, adminExpenses }) {
             </TableHead>
             <TableBody>
                 {budget.map((elem, index) => {
-                    return <TableRow>
+                    return (<TableRow>
                         <TableCell>{index + 1}.</TableCell>
                         <TableCell>RD${elem + adminExpenses}</TableCell>
-                    </TableRow>
+                </TableRow>);
                 })}
             </TableBody>
         </Table>
-    </div>)
+    </div>);
 }
 
 export function Results({ duration, cost, criticalPath, expectedTime }) {
@@ -41,5 +41,5 @@ export function Results({ duration, cost, criticalPath, expectedTime }) {
             <span>Ruta Critica: </span>
             {criticalPath.map(element => <span>{`(${element[0].name})`}</span>)}
         </Grid>
-    )
+    );
 }

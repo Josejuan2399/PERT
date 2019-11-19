@@ -1,38 +1,47 @@
+/* eslint-disable one-var */
 import React, {
     useState, useEffect
 } from 'react';
+import Grid from '@material-ui/core/Grid';
 
 // STYLES
 import './styles.css';
 
 // HELPERS
-import { PertData } from './logic.js';
-import { isNameRepeated, isAnyFieldEmpty } from '../../functions/helpers.js';
+import { PertData } from './logic';
+import { isNameRepeated, isAnyFieldEmpty } from '../../functions/helpers';
 
 // COMPONENTS
-import { Results } from './Results.js';
-import { Form } from './Form.js';
-import { SnackBarAlert } from '../Global/SnackBarAlert.js';
+import { Results } from './Results';
+import { Form } from './Form';
+import { SnackBarAlert } from '../Global/SnackBarAlert';
+import { Graph } from '../Graph';
 
-import Grid from '@material-ui/core/Grid';
 
 
 export default function PERT({ initialData, reduced, Perti, setPerti, normalPerti, canProceed, setProceed }) {
     // Helpers
-    let [wasCalculated, setCalc] = useState(false);
-    let [shouldDisplayAlert, setAlert] = useState(false);
-    let [alertMsg, setAlertMsg] = useState('');
+    const [wasCalculated, setCalc] = useState(false);
+
+    const [shouldDisplayAlert, setAlert] = useState(false);
+
+    const [alertMsg, setAlertMsg] = useState('');
 
     // Inputs
-    let [adminExpenses, setExpenses] = useState(35000);
-    let [budget, setBudget] = useState([]);
-    let [data, setData] = useState(initialData);
+    const [adminExpenses, setExpenses] = useState(35000);
+
+    const [budget, setBudget] = useState([]);
+
+    const [data, setData] = useState(initialData);
 
     // Results
-    let [cost, setCost] = useState(0);
-    let [criticalPath, setCriticalPath] = useState([]);
-    let [duration, setDuration] = useState(0);
-    let [expectedTime, setExpectedTime] = useState(0);
+    const [cost, setCost] = useState(0);
+
+    const [criticalPath, setCriticalPath] = useState([]);
+
+    const [duration, setDuration] = useState(0);
+
+    const [expectedTime, setExpectedTime] = useState(0);
 
     const isValid = () => {
         if (isNameRepeated(data)) {
@@ -53,11 +62,11 @@ export default function PERT({ initialData, reduced, Perti, setPerti, normalPert
             return false;
         }
         return true;
-    }
+    };
 
     const closeAlert = () => {
         setAlert(false);
-    }
+    };
 
     function handleData() {
         if (!isValid()) return;
@@ -69,6 +78,7 @@ export default function PERT({ initialData, reduced, Perti, setPerti, normalPert
     }
 
     useEffect(() => {
+        setCalc(false);
         if (!Perti) return;
         Perti.doAll(reduced);
         setDuration(Perti.totalDuration);
@@ -76,28 +86,35 @@ export default function PERT({ initialData, reduced, Perti, setPerti, normalPert
         setCost(Perti.totalCost);
         setBudget(Perti.budget);
         setExpectedTime(Perti.sumOfExpectedTime);
-        setCalc(true);
-    }, [Perti])
+        setTimeout(()=> {
+            setCalc(true);
+        }, 1);
+    }, [Perti]);
 
     const handleExpenses = ({ target: { value } }) => {
         if (value === '') value = 0;
         setExpenses(parseInt(value));
-    }
+    };
 
     const setDataThroughChildren = (newData) => {
         setData(newData);
-    }
+    };
 
     const setAlertThroughChildren = (msg) => {
         setAlert(true);
-        setAlertMsg(msg)
-    }
+        setAlertMsg(msg);
+    };
+
+    function _onSubmit() {
+        handleData();
+    };
 
     return (
         <Grid className="App">
             <h1>{reduced ? 'Reducido' : 'Normal'}</h1>
             <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren} adminExpenses={adminExpenses} handleExpenses={handleExpenses} />
             {wasCalculated && <div>
+                <Graph  data={Perti}/>
                 <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} expectedTime={expectedTime} />
             </div>}
             <SnackBarAlert msg={alertMsg} open={shouldDisplayAlert} onClose={closeAlert} />

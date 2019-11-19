@@ -14,7 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import CloseIcon from '@material-ui/icons/Close'
+import CloseIcon from '@material-ui/icons/Close';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -24,15 +24,15 @@ import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 
 // HELPERS
-import { isValueInAnotherArray, canRemoveActivity } from '../../functions/helpers.js';
-import { Activity } from './logic.js';
+import { isValueInAnotherArray, canRemoveActivity } from '../../functions/helpers';
+import { Activity } from './logic';
 
 function PreChips({ data, act, index, addPre, removePre }) {
     return <TableCell >
         {index !== 0 &&
             <Select
                 value={act.pre} // Values already Selected
-                onChange={event => { addPre(event, index) }}
+                onChange={event => { addPre(event, index); }}
                 renderValue={
                     selected => (
                         <div>
@@ -48,33 +48,37 @@ function PreChips({ data, act, index, addPre, removePre }) {
                 </MenuItem>)}
             </Select>
         }
-    </TableCell>
+    </TableCell>;
 }
 
 export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleExpenses }) {
 
-    const headers = ["Nombre", "Prerequisitos", "Pesima", "Optima", "Costo", "Acciones"]
+    const headers = ['Nombre', 'Prerequisitos', 'Pesima', 'Normal', 'Optima', 'Costo', 'Acciones'];
 
     function handleChange({ target: { value } }, key, index) {
-        let newData = [...data];
+        const newData = [...data];
+
         newData[index][key] = key === 'name' ? value : parseInt(value);
         setData(newData);
     }
 
     function handleDurationChange({ target: { value } }, key, index) {
-        let newData = [...data];
-        newData[index]['durations'][key] = parseInt(value);
+        const newData = [...data];
+
+        newData[index].durations[key] = parseInt(value);
         setData(newData);
     }
 
     function addPre({ target: { value } }, index) {
-        let newData = [...data];
+        const newData = [...data];
+
         newData[index].pre.push(value);
         setData(newData);
     }
 
     function removePre(activityName, index) {
-        let newData = [...data];
+        const newData = [...data];
+
         newData[index].pre = newData[index].pre.filter(el => el !== activityName);
         setData(newData);
     }
@@ -94,11 +98,6 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
     function createNewActivity() {
         setData([...data, new Activity()]);
     }
-
-    // useEffect(() => {
-    //     createNewActivity();
-    // }, [])
-
 
     return (<Table className="table">
         <TableHead>
@@ -131,7 +130,7 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
                                 <IconButton onClick={() => removeActivity(data[index].name)} > <RemoveIcon></RemoveIcon> </IconButton>
                             </TableCell>
                         </TableRow>
-                    )
+                    );
                 })
             }
         </TableBody>
@@ -139,13 +138,13 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
             <Grid style={{ 'min-width': 265 }}>
                 <TextField label="Gastos Administrativos" value={adminExpenses} onChange={handleExpenses}></TextField>
                 <Tooltip title="Agregar Actividad">
-                    <IconButton onClick={() => { createNewActivity() }}><AddIcon /></IconButton>
+                    <IconButton onClick={() => { createNewActivity(); }}><AddIcon /></IconButton>
                 </Tooltip>
                 <Tooltip title="Calcular">
-                    <IconButton onClick={() => { onSubmit() }}><PlayArrowIcon /></IconButton>
+                    <IconButton onClick={() => { onSubmit(); }}><PlayArrowIcon /></IconButton>
                 </Tooltip>
             </Grid>
         </TableFooter>
 
-    </Table>)
+    </Table>);
 }
