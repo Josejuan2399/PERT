@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 // TABLE
 import Table from '@material-ui/core/Table';
@@ -40,9 +40,7 @@ function PreChips({ data, act, index, addPre, removePre }) {
                         </div>
                     )
                 }
-            // The way that already selected values will be rendered
             >
-                {/* Handles Values in the Selection Menu */}
                 {data.map(({ name }) => (name !== act.name && isValueInAnotherArray(data[index].pre, name)) && <MenuItem value={name}>
                     {name}
                 </MenuItem>)}
@@ -53,7 +51,7 @@ function PreChips({ data, act, index, addPre, removePre }) {
 
 export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleExpenses }) {
 
-    const headers = ['Nombre', 'Prerequisitos', 'Pesima', 'Normal', 'Optima', 'Costo', 'Acciones'];
+    const headers = ['Nombre', 'Prerequisitos', 'Pesima (Normal)', 'Ideal (Normal)', 'Optima (Normal)', 'Costo (Normal)', 'Pesima (Reducido)', 'Ideal (Reducido)', 'Optima (Reducido)', 'Costo (Reducido)', 'Acciones'];
 
     function handleChange({ target: { value } }, key, index) {
         const newData = [...data];
@@ -93,7 +91,7 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
 
         newData = newData.filter(el => el.name !== activityName);
         setData(newData);
-    } // Check if there's an activity that has this one as a prerequisite
+    }
 
     function createNewActivity() {
         setData([...data, new Activity()]);
@@ -108,6 +106,7 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
         <TableBody>
             {
                 data.map((act, index) => {
+                    const { worst, medium, best, reWorst, reMedium, reBest } = act.durations;
                     return (
                         <TableRow key={index}>
                             <TableCell >
@@ -115,19 +114,33 @@ export function Form({ onSubmit, data, setData, setAlert, adminExpenses, handleE
                             </TableCell>
                             <PreChips data={data} act={act} index={index} addPre={addPre} removePre={removePre} />
                             <TableCell >
-                                <TextField type="number" value={act.durations.worst} onChange={event => handleDurationChange(event, 'worst', index)}></TextField>
+                                <TextField type="number" value={worst} onChange={event => handleDurationChange(event, 'worst', index)}></TextField>
                             </TableCell>
                             <TableCell >
-                                <TextField type="number" value={act.durations.medium} onChange={event => handleDurationChange(event, 'medium', index)}></TextField>
+                                <TextField type="number" value={medium} onChange={event => handleDurationChange(event, 'medium', index)}></TextField>
                             </TableCell>
                             <TableCell >
-                                <TextField type="number" value={act.durations.best} onChange={event => handleDurationChange(event, 'best', index)}></TextField>
+                                <TextField type="number" value={best} onChange={event => handleDurationChange(event, 'best', index)}></TextField>
                             </TableCell>
                             <TableCell >
-                                <TextField type="number" value={act.cost} onChange={event => handleChange(event, 'cost', index)}></TextField>
+                                <TextField className="cost" type="number" value={act.cost} onChange={event => handleChange(event, 'cost', index)}></TextField>
+                            </TableCell>
+                            <TableCell >
+                                <TextField type="number" value={reWorst} onChange={event => handleDurationChange(event, 'reWorst', index)}></TextField>
+                            </TableCell>
+                            <TableCell >
+                                <TextField type="number" value={reMedium} onChange={event => handleDurationChange(event, 'reMedium', index)}></TextField>
+                            </TableCell>
+                            <TableCell >
+                                <TextField type="number" value={reBest} onChange={event => handleDurationChange(event, 'reBest', index)}></TextField>
+                            </TableCell>
+                            <TableCell >
+                                <TextField className="cost" type="number" value={act.reCost} onChange={event => handleChange(event, 'reCost', index)}></TextField>
                             </TableCell>
                             <TableCell>
-                                <IconButton onClick={() => removeActivity(data[index].name)} > <RemoveIcon></RemoveIcon> </IconButton>
+                                <Tooltip title="Eliminar Actividad">
+                                    <IconButton onClick={() => removeActivity(data[index].name)} > <RemoveIcon></RemoveIcon> </IconButton>
+                                </Tooltip>
                             </TableCell>
                         </TableRow>
                     );

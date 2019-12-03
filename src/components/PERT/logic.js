@@ -2,14 +2,17 @@
 // eslint-disable-next-line max-classes-per-file
 export class Activity {
   // eslint-disable-next-line max-params
-  constructor(name, worst, medium, best, cost, ...pre) {
+  constructor(name, worst, medium, best, cost, reWorst, reMedium, reBest, reCost, ...pre) {
     this.name = name;
-    this.durations = { worst, medium, best };
+    this.durations = { worst, medium, best, reWorst, reMedium, reBest };
     this.cost = cost;
+    this.reCost = reCost;
     this.pre = [...pre];
     this.isDone = false;
     this.expectedTime = 0;
     this.vExpectedTime = 0;
+    this.reExpectedTime = 0;
+    this.reVExpectedTime = 0;
   }
 }
 
@@ -18,37 +21,38 @@ export class Activity {
  * @param  {Array<Activity>} activities
  */
 export class PertData {
-  constructor(adminExpenses, normalTotalCost,normalActivities, ...activities) {
+  constructor(adminExpenses, dirtyTotalCost, ...activities) {
     this.adminExpenses = adminExpenses;
     this.activities = [...activities];
-    this.budget = [];
     this.totalCost = 0;
+    this.reTotalCost = 0;
     this.totalDuration = 0;
+    this.reTotalDuration = 0;
     this.criticalPath = [];
     this.flatActivitiesDone = [];
     this.groupedActivitiesDone = [[]];
     this.sumOfExpectedTime = 0;
+    this.reSumOfExpectedTime = 0;
 
-    // Reduced Data
-    this.normalActivities = [...normalActivities];
-    this.normalTotalCost = normalTotalCost;
+    this.dirtyTotalCost = dirtyTotalCost;
     this.reducedAmount = 0;
   }
 
-  doAll(isReduced) {
+  doAll() {
     this.setupActivities();
     this.setExpectedTimes();
     this.calculateTotalDuration();
+    this.calculateReducedTotalDuration();
     this.calculateReducedAmount();
-    isReduced ? this.calculateReducedTotalCost() : this.calculateTotalCost();
-    this.calculateBudget();
+    this.calculateTotalCost();
+    this.calculateReducedTotalCost();
     this.calculateCriticalPath();
     this.sumExpectedTimes();
+    this.sumReducedExpectedTimes();
   }
 
   calculateReducedTotalCost() {
-    console.log(`${this.normalTotalCost} + (${this.adminExpenses} * ${this.totalDuration}) + ${this.reducedAmount}`);
-    this.totalCost = this.normalTotalCost + (this.adminExpenses * this.totalDuration) + this.reducedAmount;
+    this.reTotalCost = this.dirtyTotalCost + (this.adminExpenses * this.totalDuration) + this.reducedAmount;
   }
 
   calculateTotalCost() {
@@ -56,15 +60,15 @@ export class PertData {
       return total + cost * durations.medium;
     }, 0);
 
-    this.normalTotalCost = result;
+    this.dirtyTotalCost = result;
     this.totalCost = result + (this.adminExpenses * this.totalDuration);
   }
 
   calculateReducedAmount() {
     let result = 0;
 
-    this.normalActivities.forEach((act, index) => {
-      result += (act.expectedTime - this.activities[index].expectedTime.toFixed(2)) * this.activities[index].cost;
+    this.activities.forEach((act) => {
+      result += (act.expectedTime - act.reExpectedTime.toFixed(2)) * act.reCost;
     });
     this.reducedAmount = parseInt(result.toFixed(0));
   }
@@ -77,6 +81,14 @@ export class PertData {
       .reduce((total, curr) => total + curr, 0);
   }
 
+  calculateReducedTotalDuration() {
+    this.reTotalDuration = this.groupedActivitiesDone
+      .map(group => {
+        return this.getReducedHighestDuration(group);
+      })
+      .reduce((total, curr) => total + curr, 0);
+  }
+
   calculateCriticalPath() {
     this.groupedActivitiesDone = this.groupedActivitiesDone.filter(group => group.length > 0);
     this.criticalPath = this.groupedActivitiesDone
@@ -85,33 +97,23 @@ export class PertData {
       });
   }
 
-  calculateBudget() {
-    const budget = [];
-
-    for (const group of this.groupedActivitiesDone) {
-      const groupHighestDuration = this.getHighestDuration(group);
-
-      for (let time = 1; time <= groupHighestDuration; time++) {
-        budget.push(0);
-        group.forEach(act => {
-          if (time <= act.durations.medium) budget[budget.length - 1] += act.cost;
-        });
-      }
-    }
-    this.budget = budget;
-  }
-
   setExpectedTimes() {
     this.activities.forEach(act => {
       act.expectedTime = this.calculateExpectedTime(act.durations);
       act.vExpectedTime = this.calculateVExpectedTime(act.durations);
+      act.reExpectedTime = this.calculateReducedExpectedTime(act.durations);
+      act.reVExpectedTime = this.calculateReducedVExpectedTime(act.durations);
     });
   }
 
   sumExpectedTimes() {
     const result = this.criticalPath.reduce((total, act) => total += act[0].vExpectedTime, 0);
-
     this.sumOfExpectedTime = Math.pow(result, 0.5).toFixed(2);
+  }
+
+  sumReducedExpectedTimes() {
+    const result = this.criticalPath.reduce((total, act) => total += act[0].reVExpectedTime, 0);
+    this.reSumOfExpectedTime = Math.pow(result, 0.5).toFixed(2);
   }
 
   setupActivities() {
@@ -122,7 +124,7 @@ export class PertData {
 
     while (this.flatActivitiesDone.length !== this.activities.length) {
       const activitiesNotDone = this.activities.filter(act => !act.isDone),
-      activitiesReady = [];
+        activitiesReady = [];
 
       let indexOfActivity;
 
@@ -154,7 +156,8 @@ export class PertData {
     }
   }
 
-  // Helper
+  // **************************************************** HELPERS ****************************************************
+
   canActivityProceed(currentActivity) {
     if (currentActivity.pre.length === 0) return true;
     for (const currentPre of currentActivity.pre) {
@@ -169,7 +172,6 @@ export class PertData {
     return true;
   }
 
-  // Helper
   getHighestDuration(activityGroup) {
     return activityGroup.reduce(
       (max, { durations }) => (durations.medium > max ? durations.medium : max),
@@ -177,19 +179,30 @@ export class PertData {
     );
   }
 
-  // Helper
-  calculateExpectedTime({ worst, medium, best }) {
-    // Formula given by Edward
-    const result = worst + (4 * medium) + best;
+  getReducedHighestDuration(activityGroup) {
+    return activityGroup.reduce(
+      (max, { durations }) => (durations.reMedium > max ? durations.reMedium : max),
+      0
+    );
+  }
 
+  calculateExpectedTime({ worst, medium, best }) {
+    const result = worst + (4 * medium) + best;
     return result / 6;
   }
 
-  // Helper
-  calculateVExpectedTime({ worst, best }) {
-    // Formula given by Edward
-    const result = ((best - worst) / 6);
+  calculateReducedExpectedTime({ reWorst, reMedium, reBest }) {
+    const result = reWorst + (4 * reMedium) + reBest;
+    return result / 6;
+  }
 
+  calculateVExpectedTime({ worst, best }) {
+    const result = ((best - worst) / 6);
+    return Math.pow(result, 2);
+  }
+
+  calculateReducedVExpectedTime({ reWorst, reBest }) {
+    const result = ((reBest - reWorst) / 6);
     return Math.pow(result, 2);
   }
 }

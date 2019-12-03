@@ -11,7 +11,7 @@ import Grid from '@material-ui/core/Grid';
 export function Results({ duration, cost, criticalPath, budget, adminExpenses }) {
     return (
         <Grid>
-            <h1>Resultados</h1>
+            <h1>Datos</h1>
             <p>Duracion Total: {duration} meses</p>
             <p>Costo Total: RD${cost + (adminExpenses * duration)}</p>
             <span>Ruta Critica: </span>

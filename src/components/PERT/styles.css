@@ -21,3 +21,8 @@ html {
   background-color: #f7f7f7;
   padding: 50px 50px;
 }
+
+
+.cost {
+  min-width: 100px !important;
+}

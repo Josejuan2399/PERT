@@ -19,7 +19,7 @@ import { Graph } from '../Graph';
 
 
 
-export default function PERT({ initialData, reduced, Perti, setPerti, normalPerti, canProceed, setProceed }) {
+export default function PERT({ initialData, Perti, setPerti }) {
     // Helpers
     const [wasCalculated, setCalc] = useState(false);
 
@@ -56,11 +56,6 @@ export default function PERT({ initialData, reduced, Perti, setPerti, normalPert
             return false;
         }
 
-        if (!canProceed && reduced) {
-            setAlertMsg('Primero Calcule los datos normales');
-            setAlert(true);
-            return false;
-        }
         return true;
     };
 
@@ -70,23 +65,19 @@ export default function PERT({ initialData, reduced, Perti, setPerti, normalPert
 
     function handleData() {
         if (!isValid()) return;
-        if (reduced) setPerti(new PertData(adminExpenses, normalPerti.normalTotalCost, normalPerti.activities, ...data));
-        else {
-            setPerti(new PertData(adminExpenses, 0, [], ...data));
-            setProceed(true);
-        }
+        setPerti(new PertData(adminExpenses, 0, ...data));
     }
 
     useEffect(() => {
         setCalc(false);
         if (!Perti) return;
-        Perti.doAll(reduced);
+        Perti.doAll();
         setDuration(Perti.totalDuration);
         setCriticalPath(Perti.criticalPath);
         setCost(Perti.totalCost);
         setBudget(Perti.budget);
         setExpectedTime(Perti.sumOfExpectedTime);
-        setTimeout(()=> {
+        setTimeout(() => {
             setCalc(true);
         }, 1);
     }, [Perti]);
@@ -111,11 +102,12 @@ export default function PERT({ initialData, reduced, Perti, setPerti, normalPert
 
     return (
         <Grid className="App">
-            <h1>{reduced ? 'Reducido' : 'Normal'}</h1>
+            <h1>Tabla para Calculo de PERT</h1>
             <Form onSubmit={handleData} setData={setDataThroughChildren} data={data} setAlert={setAlertThroughChildren} adminExpenses={adminExpenses} handleExpenses={handleExpenses} />
             {wasCalculated && <div>
-                <Graph  data={Perti}/>
-                <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} expectedTime={expectedTime} />
+                <h2>Grafico Resultante</h2>
+                <Graph data={Perti} />
+                <Results duration={duration} cost={cost} criticalPath={criticalPath} budget={budget} adminExpenses={adminExpenses} expectedTime={expectedTime} Perti={Perti} />
             </div>}
             <SnackBarAlert msg={alertMsg} open={shouldDisplayAlert} onClose={closeAlert} />
         </Grid>
